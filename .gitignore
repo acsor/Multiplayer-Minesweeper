@@ -1,0 +1,4 @@
+# Custom rules
+/.idea/* # Not sure about this one
+/__pycache__
+*.swp
