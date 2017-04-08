@@ -27,6 +27,10 @@ class Board:
     def __len__(self):
         return self.size
 
+    def __str__(self):
+        # TO-DO Implement method
+        pass
+
     def __getitem__(self, item):
         return self.squares[item]
 

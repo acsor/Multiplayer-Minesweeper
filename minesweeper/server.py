@@ -1,7 +1,7 @@
 #!/usr/bin/python3.2
 
 from socket import *
-from message import *
+from minesweeper.message import *
 
 
 class MineSweeperServer:
@@ -44,28 +44,32 @@ class Connection:
 
         # TO-DO Verify open() is being used correctly
         with open(self.client.fileno()) as stream:
-            message = stream.readline()
+            in_message = UTSMessage.parse_infer_type(stream.readline())
 
-            while message is not None:
-                Connection._handle_message(stream, message)
-                message = stream.readline()
+            while in_message is not None:
+                out_message = self._craft_out_from_in_message(UTSMessage.parse_infer_type(in_message))
+                in_message = UTSMessage.parse_infer_type(stream.readline())
 
         self.client.close()
 
-    def _craft_outgoing_message(self, text_message):
-        message = Message.message_factory(text_message)
+    def _craft_out_from_in_message(self, in_message):
         result = None
 
         # TO-DO Check this use of type() works as expected
-        if type(message) is UTSLookMessage:
+        if type(in_message) is UTSLookMessage:
             pass
-        elif type(message) is UTSDigMessage:
+        elif type(in_message) is UTSDigMessage:
             pass
-        elif type(message) is UTSFlagMessage:
+        elif type(in_message) is UTSFlagMessage:
             pass
-        elif type(message) is UTSDeflagMessage:
+        elif type(in_message) is UTSDeflagMessage:
             pass
-        elif type(message) is UTSHelpRequestMessage:
+        elif type(in_message) is UTSHelpRequestMessage:
             pass
-        elif type(message) is UTSByeMessage:
+        elif type(in_message) is UTSByeMessage:
             pass
+
+        return result
+
+if __name__ == "__main__":
+    print("Hello, I'm working!")
