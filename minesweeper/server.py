@@ -149,17 +149,17 @@ class Connection:
     def _craft_out_from_in_message(self, in_message):
         result = None
 
-        if type(in_message) is UTSLookMessage:
+        if isinstance(in_message, UTSLookMessage):
             pass
-        elif type(in_message) is UTSDigMessage:
+        elif isinstance(in_message, UTSDigMessage):
             pass
-        elif type(in_message) is UTSFlagMessage:
+        elif isinstance(in_message, UTSFlagMessage):
             pass
-        elif type(in_message) is UTSDeflagMessage:
+        elif isinstance(in_message, UTSDeflagMessage):
             pass
-        elif type(in_message) is UTSHelpRequestMessage:
+        elif isinstance(in_message, UTSHelpRequestMessage):
             pass
-        elif type(in_message) is UTSByeMessage:
+        elif isinstance(in_message, UTSByeMessage):
             pass
 
         return result
