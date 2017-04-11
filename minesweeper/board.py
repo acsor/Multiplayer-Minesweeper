@@ -1,5 +1,3 @@
-#!/usr/bin/python3.2
-
 from enum import Enum, unique
 from random import shuffle
 from itertools import chain

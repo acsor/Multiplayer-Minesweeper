@@ -1,4 +1,3 @@
-#!/usr/bin/python3.2
 
 
 class Message(object):

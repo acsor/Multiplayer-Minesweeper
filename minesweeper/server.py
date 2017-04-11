@@ -1,5 +1,3 @@
-#!/usr/bin/python3.2
-
 from socket import *
 from minesweeper.message import *
 from concurrent.futures import Future, ThreadPoolExecutor
@@ -34,10 +32,10 @@ class MineSweeperServer:
             host = self.server.getsockname()[0] or repr_unknown
             port = self.server.getsockname()[1] or repr_unknown
         else:
-            host = port = None
+            host = port = repr_unknown
 
-        return "<%s object, host = %s, port = %s, debug = %s>" %\
-               (MineSweeperServer.__name__, host, port, self.debug)
+        return "<'%s.%s' object, host = %s, port = %s, debug = %s>" %\
+               (MineSweeperServer.__module__, MineSweeperServer.__name__, host, port, self.debug)
 
     def __iter__(self):
         return iter(self.futures_to_connections.values())
