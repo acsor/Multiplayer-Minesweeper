@@ -37,6 +37,35 @@ class BoardTest(TestCase):
                 i in b
             )
 
+    def test_board_str(self):
+        b = Board(Board.DIFF_HARD)
+
+        for s in b:
+            if s.has_bomb:
+                b.set_state(s.row, s.col, State.DUG)
+
+        self.assertEqual(
+            b.mines,
+            str(b).count(Square.REPR_BOMB)
+        )
+        self.assertEqual(
+            len(b) - b.mines,
+            str(b).count(State.UNTOUCHED.representation)
+        )
+
+    def test_board_len(self):
+        """
+        Tests the length of a Board instance b when counting its number of squares, and when calculating
+        b.height * b.width.
+        """
+        boards = [Board(Board.DIFF_INTERMEDIATE) for i in range(100)]
+
+        for b in boards:
+            self.assertEqual(
+                b.height * b.width,
+                len(b)
+            )
+
 def test_free():
     b = Board()
 
@@ -56,4 +85,4 @@ def test_free():
     print(b)
 
 if __name__ == "__main__":
-    test_free()
+    unittest.main(BoardTest)
