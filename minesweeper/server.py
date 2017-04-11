@@ -34,24 +34,31 @@ class MineSweeperServer:
         else:
             host = port = repr_unknown
 
-        return "<'%s.%s' object, host = %s, port = %s, debug = %s>" %\
-               (MineSweeperServer.__module__, MineSweeperServer.__name__, host, port, self.debug)
+        return "<'%s.%s' object, host=%s, port=%s, debug=%s>" %\
+               (self.__module__, self.__class__.__name__, host, port, self.debug)
+
+    def __del__(self):
+        self.close()
 
     def __iter__(self):
         return iter(self.futures_to_connections.values())
 
     def close(self):
-        for future in self.futures_to_connections.keys():
-            self.make_shutdown_client().shutdown_client(future)
+        self.executor.shutdown(False)
 
         self.server.shutdown(SHUT_RDWR)
+        self.server.detach()
         self.server.close()
+        del self.server
         self.is_closed = True
 
         if self.debug:
             print(repr(self))
 
     def run_next_connection(self):
+        # The block of code below may be deleted, as ThreadPoolExecutor's constructor supports
+        # specifying the number of max worker threads. TO-DO Delete the block below, if it isn't
+        # needed.
         if self.is_full():
             if self.debug:
                 print(
@@ -87,6 +94,7 @@ class MineSweeperServer:
 
                 if connection is not None:
                     connection.close()
+                future.cancel()
                 del self.futures_to_connections[future]
 
                 if self.debug:
