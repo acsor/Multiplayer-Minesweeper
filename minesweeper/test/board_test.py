@@ -20,7 +20,7 @@ class BoardTest(TestCase):
         )
 
     def test_contains(self):
-        b = Board.from_difficulty(Board.DIFF_INTERMEDIATE)
+        b = Board.create_from_difficulty(Board.DIFF_INTERMEDIATE)
         true_evaluations = [(0, 0), (0, b.width() - 1), (b.height() - 1, 0), (b.height() - 1, b.width() - 1),
                             (b.height() // 2, b.width() // 2)]
         false_evaluations = [(0, -1), (0, b.width()), (b.height(), 0), (b.height() - 1, b.width())]
@@ -38,7 +38,7 @@ class BoardTest(TestCase):
             )
 
     def test_board_str(self):
-        b = Board.from_difficulty(Board.DIFF_HARD)
+        b = Board.create_from_difficulty(Board.DIFF_HARD)
 
         for s in b:
             if s.has_bomb:
@@ -59,7 +59,7 @@ class BoardTest(TestCase):
         diff[0] * diff[1] (namely, diff."height" * diff."width").
         """
         diff = Board.DIFF_INTERMEDIATE
-        boards = [Board.from_difficulty(diff) for i in range(100)]
+        boards = [Board.create_from_difficulty(diff) for i in range(100)]
 
         for b in boards:
             self.assertEqual(
@@ -76,14 +76,14 @@ class BoardTest(TestCase):
 
         for file in files["safe"]:
             self.assertIsInstance(
-                Board.from_file(root + file),
+                Board.create_from_file(root + file),
                 Board
             )
 
         for file in files["unsafe"]:
             self.assertRaises(
                 ValueError,
-                Board.from_file,
+                Board.create_from_file,
                 root + file
             )
 
@@ -92,7 +92,7 @@ def test_free():
     Utily method to see some console output when debugging the code, as the unittest framework captures it and it didn't
     seem straightforward to me displaying it.
     """
-    b = Board.from_difficulty()
+    b = Board.create_from_difficulty()
 
     b.set_state(0, 1, State.DUG)
     b.set_state(3, 1, State.DUG)

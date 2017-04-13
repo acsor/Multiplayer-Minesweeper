@@ -1,6 +1,7 @@
 from socket import *
 from minesweeper.message import *
 from concurrent.futures import Future, ThreadPoolExecutor
+from argparse import ArgumentParser
 
 
 class MineSweeperServer:
@@ -74,7 +75,7 @@ class MineSweeperServer:
             )
             future = self.executor.submit(connection)
             future.add_done_callback(self.make_shutdown_client())
-            future.add_done_callback(self.make_close_if_no_connections())
+            future.add_done_callback(self.make_auto_close())
 
             self.futures_to_connections[future] = connection
 
@@ -103,13 +104,13 @@ class MineSweeperServer:
 
         return shutdown_client
 
-    def make_close_if_no_connections(self):
+    def make_auto_close(self):
 
-        def close_if_no_connections(future):
+        def auto_close(future):
             if len(self.futures_to_connections) == 0:
                 self.close()
 
-        return close_if_no_connections
+        return auto_close
 
 
 class Connection:
@@ -170,3 +171,15 @@ class Connection:
 
         return result
 
+
+def main():
+    ap = ArgumentParser()
+
+    ap.add_argument("debug", dest="debug", action="store", help="Debug flag", required=True)
+    ap.add_argument("-s", "--size", dest="size", action="store", type=int,
+                    help="Value of the height and width of the grid")
+    ap.add_argument("-f", "--file", dest="file", action="store",
+                    help="Path pointing to a board file")
+
+if __name__ == "__main__":
+    main()

@@ -1,5 +1,5 @@
 from enum import Enum, unique
-from random import shuffle
+from random import shuffle, random
 from itertools import chain
 
 
@@ -52,18 +52,34 @@ class Board:
         self._check_state()
 
     @staticmethod
-    def from_difficulty(difficulty=DIFF_EASY):
+    def create_from_probability(height, width, bomb_probability=0.25):
+        if height * width <= 0:
+            raise ValueError("The grid size must be greater than 0 (found %d)" % height * width)
+        if not 0 <= bomb_probability < 1:
+            raise ValueError("It must be 0 <= bomb_probability <= 1 (bomb_probability = %d" % bomb_probability)
 
-        height, width, mines = difficulty
-        mines_distribution = Board._random_mines_distribution((height * width) - mines, mines)
-        # The line of code below turns mines_distribution from a flat list of boolean values to a multi-dimensional
-        # list containing the same values.
-        grid = [mines_distribution[i * width:(i * width) + width] for i in range(height)]
+        squares = list()
 
-        return Board(grid)
+        for square in range(height * width):
+            squares.append(random() <= bomb_probability)
+
+        return Board._list_to_grid(squares, height, width)
 
     @staticmethod
-    def from_file(path):
+    def create_from_difficulty(difficulty=DIFF_EASY):
+        height, width, mines = difficulty
+
+        if height * width <= 0:
+            raise ValueError("The grid size must be greater than 0 (found %d)" % height * width)
+        if mines < 0:
+            raise ValueError("The number of mines must be at least 0 (found %d)" % mines)
+
+        squares = Board._random_mines_distribution((height * width) - mines, mines)
+
+        return Board(Board._list_to_grid(squares, height, width))
+
+    @staticmethod
+    def create_from_file(path):
 
         def read_line(text_line):
             sep = " "
@@ -200,3 +216,17 @@ class Board:
         shuffle(distribution)
 
         return distribution
+
+    @staticmethod
+    def _list_to_grid(squares, height, width):
+        """
+        Utility method used to convert a flat list of boolean values (representing mined squares) to
+        a multi-dimensional list with specified height and width.
+
+        :param squares: one-dimensional list of squares.
+        :param height: height of the resulting grid.
+        :param width: number of elements for each of the **height** rows.
+        :return: a grid-like list with the same values as **squares**.
+        """
+        return [squares[i * width:(i * width) + width] for i in range(height)]
+
