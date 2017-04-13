@@ -5,7 +5,6 @@ from itertools import chain
 
 @unique
 class State(Enum):
-
     UNTOUCHED = "-"
     FLAGGED = "F"
     DUG = " "
@@ -15,7 +14,6 @@ class State(Enum):
 
 
 class Square:
-
     REPR_BOMB = "*"
 
     def __init__(self, row, col, has_bomb, state):
@@ -35,30 +33,63 @@ class Square:
 
 
 class Board:
-    # Height, width, mines number
+    # Height, width, mines_count number
     DIFF_EASY = (9, 9, 10)
     DIFF_INTERMEDIATE = (16, 16, 40)
     DIFF_HARD = (16, 30, 99)
 
-    def __init__(self, difficulty=DIFF_EASY):
-        self.height, self.width, self.mines = difficulty
+    def __init__(self, boolean_grid):
         self.squares = list()
-        mines_distribution = Board._random_mines_distribution(
-            (self.height * self.width) - self.mines,
-            self.mines
-        )
 
-        for row in range(self.height):
+        for row in range(len(boolean_grid)):
             self.squares.append(list())
 
-            for col in range(self.width):
+            for col in range(len(boolean_grid[row])):
                 self.squares[row].append(
-                    Square(row, col, mines_distribution.pop(0), State.UNTOUCHED)
+                    Square(row, col, boolean_grid[row][col], State.UNTOUCHED)
                 )
 
+        self._check_state()
+
+    @staticmethod
+    def from_difficulty(difficulty=DIFF_EASY):
+
+        height, width, mines = difficulty
+        mines_distribution = Board._random_mines_distribution((height * width) - mines, mines)
+        # The line of code below turns mines_distribution from a flat list of boolean values to a multi-dimensional
+        # list containing the same values.
+        grid = [mines_distribution[i * width:(i * width) + width] for i in range(height)]
+
+        return Board(grid)
+
+    @staticmethod
+    def from_file(path):
+
+        def read_line(text_line):
+            sep = " "
+            encoding = {'0': False, '1': True}
+
+            # dict.get() returns None when a given argument is not contained within the dict keys
+            line = [encoding.get(i) for i in text_line.strip().split(sep)]
+
+            if None in line:
+                raise ValueError("Found invalid content in '%s'. Every line can contain only 0s and 1s" % path)
+
+            return line
+
+        with open(path) as f:
+            lines = [read_line(line) for line in f]
+
+            for line in lines:
+                if len(line) != len(lines):
+                    raise ValueError("Found %d wide line in a %d tall grid, square grid expected" %
+                                     (len(line), len(lines)))
+
+        return Board(lines)
+
     def __repr__(self):
-        return "<'%s.%s' object, height=%d, width=%d, mines=%d>" % \
-               (self.__class__.__module__, self.__class__.__name__, self.height, self.width, self.mines)
+        return "<'%s.%s' object, height=%d, width=%d, mines_count=%d>" % \
+               (self.__class__.__module__, self.__class__.__name__, len(self.squares), self.width(), self.mines_count())
 
     def __str__(self):
 
@@ -101,6 +132,15 @@ class Board:
     def __iter__(self):
         return chain(*self.squares)
 
+    def height(self):
+        return len(self.squares)
+
+    def width(self):
+        return len(self.squares[0]) if len(self.squares) > 0 else 0
+
+    def mines_count(self):
+        return len([square for square in self if square.has_bomb])
+
     def set_state(self, row, col, state):
         """
         Set the state of a square indicated by (row, col) to state.
@@ -118,7 +158,7 @@ class Board:
 
         if state == State.DUG and not self.squares[row][col].has_bomb:
             neighbors = self.neighbors(row, col)
-            nearby_bombs = sum([1 for n in neighbors if n.has_bomb])
+            nearby_bombs = len([n for n in neighbors if n.has_bomb])
 
             if nearby_bombs == 0:
                 for n in filter(lambda x: x.state != State.DUG, neighbors):
@@ -135,6 +175,23 @@ class Board:
                     result.append(self.squares[x][y])
 
         return result
+
+    def _check_state(self):
+        """
+        Performs validity checks on the current instance, raising relevant exceptions when detecting an invalid state.
+        :return: True if no inconsistencies were found within the current instance.
+        """
+        expected_line_length = len(self.squares[0]) if len(self.squares) > 0 else None
+
+        for line in self.squares:
+            types = {type(square) for square in line}
+
+            if {Square} != types:
+                raise ValueError("The board can only contain Square variables within its grid")
+            if len(line) != expected_line_length:
+                raise ValueError("Found a %d-element-wide line, expected %d" % (len(line), expected_line_length))
+
+        return True
 
     @staticmethod
     def _random_mines_distribution(empty_squares, mined_squares):
