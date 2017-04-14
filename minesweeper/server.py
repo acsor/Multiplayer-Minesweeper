@@ -12,21 +12,24 @@ PROGRAM_NAME = "Minesweeper server"
 
 
 class MineSweeperServer:
-    HOST = ''
-    PORT_DEFAULT = 3666
-    LISTEN_BACKLOG = 0
-    MAX_CLIENTS = 4
 
-    def __init__(self, board, port=PORT_DEFAULT, debug=False):
+    DEFAULTS = {
+        "host": '',
+        "port": 3666,
+        "listen_backlog": 0,
+        "max_clients": 4
+    }
+
+    def __init__(self, board, port=DEFAULTS["port"], debug=False):
         self.board = board
         self.debug = debug
         self.futures_to_connections = dict()
 
         self.server = socket(AF_INET, SOCK_STREAM)
-        self.server.bind((self.HOST, port))
-        self.server.listen(self.LISTEN_BACKLOG)
+        self.server.bind((self.DEFAULTS["host"], port))
+        self.server.listen(self.DEFAULTS["listen_backlog"])
 
-        self.executor = ThreadPoolExecutor(self.MAX_CLIENTS)
+        self.executor = ThreadPoolExecutor(self.DEFAULTS["max_clients"])
         self.is_closed = False
 
         # TO-DO Replace print statements with more appropriate log primitives for debugging
@@ -71,7 +74,7 @@ class MineSweeperServer:
             if self.debug:
                 print(
                     "Reached maximum number of connections: %d/%d occupied" %
-                    (len(self.futures_to_connections), self.MAX_CLIENTS)
+                    (len(self.futures_to_connections), self.DEFAULTS["max_clients"])
                 )
             return None
         else:
@@ -89,7 +92,7 @@ class MineSweeperServer:
             return future, self.futures_to_connections[future]
 
     def is_full(self):
-        return len(self.futures_to_connections) >= self.MAX_CLIENTS
+        return len(self.futures_to_connections) >= self.DEFAULTS["max_clients"]
 
     # Perhaps not the most elegant way to fix the argument passing of Future's add_done_callback(), but I expect
     # this closure to work, and this is what matters at the moment of this writing.
@@ -107,7 +110,7 @@ class MineSweeperServer:
 
                 if self.debug:
                     print("Connection closed: %d/%d still running" %
-                          (len(self.futures_to_connections), self.MAX_CLIENTS))
+                          (len(self.futures_to_connections), self.DEFAULTS["max_clients"]))
 
         return shutdown_client
 
@@ -180,14 +183,17 @@ class Connection:
 
 
 def main():
-    default_size, default_port = 10, MineSweeperServer.PORT_DEFAULT
+    defaults = {
+        "size": 10,
+        "port": MineSweeperServer.DEFAULTS["port"]
+    }
     ap = ArgumentParser(PROGRAM_NAME)
 
     ap.add_argument("debug", action="store", help="Debug flag for server")
     ap.add_argument("-p", "--port", dest="port", type=int, action="store",
                     help="Local port where to connect the server")
 
-    creation_group = ap.add_mutually_exclusive_group( )
+    creation_group = ap.add_mutually_exclusive_group()
     creation_group.add_argument("-s", "--size", dest="size", action="store", type=int,
                                 help="Value of the height and width of the grid")
     creation_group.add_argument("-f", "--file", dest="file", action="store", type=str,
@@ -200,12 +206,12 @@ def main():
     elif arguments.file is not None:
         board = Board.create_from_file(arguments.file)
     else:
-        board = Board.create_from_probability(default_size)
+        board = Board.create_from_probability(defaults["size"])
 
     if arguments.port is not None:
         port = arguments.port
     else:
-        port = default_port
+        port = defaults["port"]
 
     server = MineSweeperServer(board, port, arguments.debug)
     server.run_next_connection()
