@@ -87,27 +87,43 @@ class BoardTest(TestCase):
                 root + file
             )
 
-def test_free():
-    """
-    Utily method to see some console output when debugging the code, as the unittest framework captures it and it didn't
-    seem straightforward to me displaying it.
-    """
-    b = Board.create_from_difficulty()
 
-    b.set_state(0, 1, State.DUG)
-    b.set_state(3, 1, State.DUG)
-    b.set_state(0, 2, State.DUG)
-    b.set_state(0, 1, State.DUG)
-    b.set_state(0, 5, State.DUG)
-    b.set_state(6, 0, State.DUG)
-    b.set_state(0, 8, State.DUG)
-    b.set_state(1, 1, State.DUG)
-    b.set_state(7, 2, State.DUG)
-    b.set_state(4, 1, State.DUG)
-    b.set_state(4, 3, State.FLAGGED)
-    b.set_state(4, 5, State.FLAGGED)
+class BoardFreeTest:
 
-    print(b)
+    @staticmethod
+    def test_free():
+        """
+            Utily method to see some console output when debugging the code, as the unittest framework captures it and it didn't
+            seem straightforward to me displaying it.
+            """
+        b = Board.create_from_difficulty()
+
+        b.set_state(0, 1, State.DUG)
+        b.set_state(3, 1, State.DUG)
+        b.set_state(0, 2, State.DUG)
+        b.set_state(0, 1, State.DUG)
+        b.set_state(0, 5, State.DUG)
+        b.set_state(6, 0, State.DUG)
+        b.set_state(0, 8, State.DUG)
+        b.set_state(1, 1, State.DUG)
+        b.set_state(7, 2, State.DUG)
+        b.set_state(4, 1, State.DUG)
+        b.set_state(4, 3, State.FLAGGED)
+        b.set_state(4, 5, State.FLAGGED)
+
+        print(b)
+
+    @staticmethod
+    def test_create_probability(size):
+        board = Board.create_from_probability(size, size)
+
+        for square in filter(lambda x: x.has_bomb, board):
+            board.set_state(square.row, square.col, State.DUG)
+
+        print(board)
+        print("Found %d bombs in %d squares (%.3f ratio)" % (board.mines_count(), len(board), board.mines_count() / len(board)))
+
 
 if __name__ == "__main__":
-    unittest.main(BoardTest)
+    # unittest.main(BoardTest)
+    BoardFreeTest.test_create_probability(15)

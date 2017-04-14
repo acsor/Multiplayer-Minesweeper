@@ -63,7 +63,7 @@ class Board:
         for square in range(height * width):
             squares.append(random() <= bomb_probability)
 
-        return Board._list_to_grid(squares, height, width)
+        return Board(Board._list_to_grid(squares, height, width))
 
     @staticmethod
     def create_from_difficulty(difficulty=DIFF_EASY):

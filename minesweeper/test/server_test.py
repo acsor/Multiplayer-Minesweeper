@@ -12,7 +12,7 @@ class ServerTest:
     def test_default(self):
         self.server.run_next_connection()
 
-        while len(self.server.futures_to_connections) > 0 and not self.server.is_closed:
+        while len(self.connections()) > 0 and not self.server.is_closed:
             if not self.server.is_full():
                 self.server.run_next_connection()
 

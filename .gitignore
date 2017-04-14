@@ -1,5 +1,5 @@
 # Custom rules
-/.idea/* # Not sure about this one
 /__pycache__
 minesweeper/__pycache__
+/minesweeper/test/__pycache__
 *.swp

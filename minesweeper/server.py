@@ -1,7 +1,14 @@
+#!/usr/bin/python3.2
+
 from socket import *
-from minesweeper.message import *
+from message import *
 from concurrent.futures import Future, ThreadPoolExecutor
 from argparse import ArgumentParser
+from board import Board, State
+from sys import argv
+
+
+PROGRAM_NAME = "Minesweeper server"
 
 
 class MineSweeperServer:
@@ -36,13 +43,10 @@ class MineSweeperServer:
             host = port = repr_unknown
 
         return "<'%s.%s' object, host=%s, port=%s, debug=%s>" %\
-               (self.__module__, self.__class__.__name__, host, port, self.debug)
+               (MineSweeperServer.__module__, self.__class__.__name__, host, port, self.debug)
 
     def __del__(self):
         self.close()
-
-    def __iter__(self):
-        return iter(self.futures_to_connections.values())
 
     def close(self):
         self.executor.shutdown(False)
@@ -55,6 +59,9 @@ class MineSweeperServer:
 
         if self.debug:
             print(repr(self))
+
+    def connections(self):
+        return self.futures_to_connections.values()
 
     def run_next_connection(self):
         # The block of code below may be deleted, as ThreadPoolExecutor's constructor supports
@@ -173,13 +180,41 @@ class Connection:
 
 
 def main():
-    ap = ArgumentParser()
+    default_size, default_port = 10, MineSweeperServer.PORT_DEFAULT
+    ap = ArgumentParser(PROGRAM_NAME)
 
-    ap.add_argument("debug", dest="debug", action="store", help="Debug flag", required=True)
-    ap.add_argument("-s", "--size", dest="size", action="store", type=int,
-                    help="Value of the height and width of the grid")
-    ap.add_argument("-f", "--file", dest="file", action="store",
-                    help="Path pointing to a board file")
+    ap.add_argument("debug", action="store", help="Debug flag for server")
+    ap.add_argument("-p", "--port", dest="port", type=int, action="store",
+                    help="Local port where to connect the server")
+
+    creation_group = ap.add_mutually_exclusive_group( )
+    creation_group.add_argument("-s", "--size", dest="size", action="store", type=int,
+                                help="Value of the height and width of the grid")
+    creation_group.add_argument("-f", "--file", dest="file", action="store", type=str,
+                                help="Path pointing to a board file")
+
+    arguments = ap.parse_args(argv[1:])
+
+    if arguments.size is not None:
+        board = Board.create_from_probability(arguments.size, arguments.size)
+    elif arguments.file is not None:
+        board = Board.create_from_file(arguments.file)
+    else:
+        board = Board.create_from_probability(default_size)
+
+    if arguments.port is not None:
+        port = arguments.port
+    else:
+        port = default_port
+
+    server = MineSweeperServer(board, port, arguments.debug)
+    server.run_next_connection()
+
+    while len(server.connections()) > 0:
+        if not server.is_closed and not server.is_full():
+            server.run_next_connection()
+
+    del server
 
 if __name__ == "__main__":
     main()
