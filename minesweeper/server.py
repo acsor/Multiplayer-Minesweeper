@@ -1,14 +1,9 @@
-#!/usr/bin/python3.2
-
 from socket import *
-from message import *
+from minesweeper.message import *
 from concurrent.futures import Future, ThreadPoolExecutor
 from argparse import ArgumentParser
-from board import Board, State
+from minesweeper.board import Board, State
 from sys import argv
-
-
-PROGRAM_NAME = "Minesweeper server"
 
 
 class MineSweeperServer:
@@ -49,7 +44,8 @@ class MineSweeperServer:
                (MineSweeperServer.__module__, self.__class__.__name__, host, port, self.debug)
 
     def __del__(self):
-        self.close()
+        if not self.is_closed:
+            self.close()
 
     def close(self):
         self.executor.shutdown(False)
@@ -58,6 +54,7 @@ class MineSweeperServer:
         self.server.detach()
         self.server.close()
         del self.server
+
         self.is_closed = True
 
         if self.debug:
@@ -185,9 +182,10 @@ class Connection:
 def main():
     defaults = {
         "size": 10,
-        "port": MineSweeperServer.DEFAULTS["port"]
+        "port": MineSweeperServer.DEFAULTS["port"],
+        "program_name": "Minesweeper server",
     }
-    ap = ArgumentParser(PROGRAM_NAME)
+    ap = ArgumentParser(defaults["program_name"])
 
     ap.add_argument("debug", action="store", help="Debug flag for server")
     ap.add_argument("-p", "--port", dest="port", type=int, action="store",
@@ -220,7 +218,7 @@ def main():
         if not server.is_closed and not server.is_full():
             server.run_next_connection()
 
-    del server
+    server.close()
 
 if __name__ == "__main__":
     main()

@@ -229,4 +229,3 @@ class Board:
         :return: a grid-like list with the same values as **squares**.
         """
         return [squares[i * width:(i * width) + width] for i in range(height)]
-

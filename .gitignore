@@ -1,5 +1,6 @@
 # Custom rules
 /__pycache__
-minesweeper/__pycache__
+/minesweeper/__pycache__
 /minesweeper/test/__pycache__
+/.idea/inspectionProfiles
 *.swp
