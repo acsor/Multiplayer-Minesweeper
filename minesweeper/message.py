@@ -55,13 +55,21 @@ class UTSMessage(Message):
         """
         Creates an instance of a concrete UTSMessage class by using a factory method.
 
+        :param board: shared board instance.
         :param factory_string: string to construct a new object from.
         :return: a new instance whose class is a subtype of UTSMessage.
         """
         raise NotImplementedError()
 
-    def is_valid(self, board):
-        # I'm still unsure what parameters this method should take. TO-DO Look forward this.
+    def find_errors(self, board):
+        """
+        Checks the current state of this message against errors. If one is found, a string
+        representation of it is returned, else None is returned.
+
+        :param board: The shared board instance.
+        :return: None if no errors were found; a human-readable string explaining the issue
+                if one was found.
+        """
         raise NotImplementedError()
 
 
@@ -76,8 +84,8 @@ class UTSLookMessage(UTSMessage):
             raise ValueError("required \"%s\", found \"%s\"" %
                              (UTSLookMessage.REPR, factory_string))
 
-    def is_valid(self, board):
-        return True
+    def find_errors(self, board):
+        return None
 
     def get_representation(self):
         return self.REPR
@@ -86,10 +94,11 @@ class UTSLookMessage(UTSMessage):
 class UTSDigMessage(UTSMessage):
 
     REPR_PREFIX = "dig"
+    ERROR_OUT_OF_BOUNDS = "The coordinates %d, %d are not contained within the board"
 
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+    def __init__(self, row, col):
+        self.row = row
+        self.col = col
 
     @classmethod
     def _message_factory(cls, factory_string):
@@ -108,20 +117,24 @@ class UTSDigMessage(UTSMessage):
 
         return UTSDigMessage(x, y)
 
-    def is_valid(self, board):
-        return (self.x, self.y) in board
-
     def get_representation(self):
-        return "%s %d %d" % (self.REPR_PREFIX, self.x, self.y)
+        return "%s %d %d" % (self.REPR_PREFIX, self.row, self.col)
+
+    def find_errors(self, board):
+        if (self.row, self.col) in board:
+            return None
+        else:
+            return self.ERROR_OUT_OF_BOUNDS % (self.row, self.col)
 
 
 class UTSFlagMessage(UTSMessage):
 
     REPR_PREFIX = "flag"
+    ERROR_OUT_OF_BOUNDS = UTSDigMessage.ERROR_OUT_OF_BOUNDS
 
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+    def __init__(self, row, col):
+        self.row = row
+        self.col = col
 
     @classmethod
     def _message_factory(cls, factory_string):
@@ -134,19 +147,19 @@ class UTSFlagMessage(UTSMessage):
         return UTSFlagMessage(x, y)
 
     def get_representation(self):
-        return "%s %d %d" % (self.REPR_PREFIX, self.x, self.y)
+        return "%s %d %d" % (self.REPR_PREFIX, self.row, self.col)
 
-    def is_valid(self, board):
-        return (self.x, self.y) in board
+    find_errors = UTSDigMessage.find_errors
 
 
 class UTSDeflagMessage(UTSMessage):
 
     REPR_PREFIX = "deflag"
+    ERROR_OUT_OF_BOUNDS = UTSDigMessage.ERROR_OUT_OF_BOUNDS
 
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+    def __init__(self, row, col):
+        self.row = row
+        self.col = col
 
     @classmethod
     def _message_factory(cls, factory_string):
@@ -159,10 +172,9 @@ class UTSDeflagMessage(UTSMessage):
         return UTSDeflagMessage(x, y)
 
     def get_representation(self):
-        return "%s %d %d" % (self.REPR_PREFIX, self.x, self.y)
+        return "%s %d %d" % (self.REPR_PREFIX, self.row, self.col)
 
-    def is_valid(self, board):
-        return (self.x, self.y) in board
+    find_errors = UTSDigMessage.find_errors
 
 
 class UTSHelpRequestMessage(UTSMessage):
@@ -174,11 +186,11 @@ class UTSHelpRequestMessage(UTSMessage):
         if cls.REPR == factory_string:
             return UTSHelpRequestMessage()
 
-    def is_valid(self, board):
-        return True
-
     def get_representation(self):
         return self.REPR
+
+    def find_errors(self, board):
+        return None
 
 
 class UTSByeMessage(UTSMessage):
@@ -192,11 +204,11 @@ class UTSByeMessage(UTSMessage):
         else:
             raise ValueError("Expected %s, found %s" % (cls.REPR, factory_string))
 
-    def is_valid(self, board):
-        return True
-
     def get_representation(self):
         return self.REPR
+
+    def find_errors(self, board):
+        return None
 
 
 class STUMessage(Message):
@@ -227,28 +239,28 @@ class STUBoomMessage(STUMessage):
 class STUHelpMessage(STUMessage):
 
     REPR = """
-    \t*** Minesweeper commands help ***
-    \tlook
-    \t\tReturns a representation of the board. No mutation occurs on the board.
+\t\t*** MINESWEEPER COMMANDS HELP ***
+look
+\tReturns a representation of the board. No mutation occurs on the board.
 
-    \tdig <row> <col>
-    \t\tAttempts to dig a given cell. Index errors or a dug mine are indicated automatically\
-    if any of them occurs. Else a response like from a "look" message is sent.
+dig <row> <col>
+\tAttempts to dig a given square. Index errors or a dug mine are indicated automatically
+\tif any of them occurs. Else a response like from a "look" message is sent.
 
-    \tflag <row> <col>
-    \t\tMarks a cell with a flag. This command does not behave as a toggle. A second flag message\
-    on the same cell will not unflag it.
+flag <row> <col>
+\tMarks a square with a flag. This command does not behave as a toggle. A second flag message
+\ton the same square will not unflag it.
 
-    \tdeflag <row> <col>
-    \t\tDeflags the indicated cell, or leaves it unchanged if it was unflagged.
+deflag <row> <col>
+\tDeflags the indicated square, or leaves it unchanged if it was already unflagged.
 
-    \thelp
-    \t\tAsks this message to be sent.
+help
+\tDisplays this message.
 
-    \tbye
-    \t\tCloses the connection, ending the game for the user who submitted the message.
+bye
+\tCloses the connection, ending the game for the user who submitted the message.
 
-    """
+"""
 
     def get_representation(self):
         return self.REPR
@@ -257,15 +269,42 @@ class STUHelpMessage(STUMessage):
 class STUHelloMessage(STUMessage):
 
     REPR = """
-    Welcome to Minesweeper. %d people are playing including you.
-    Type 'help' for help.\n
-    """
+Welcome to Minesweeper. %d people are playing including you.
+Type 'help' for help.\n
+"""
 
     def __init__(self, users_number):
         self.users = users_number
 
     def get_representation(self):
         return self.REPR % self.users
+
+
+class STUErrorMessage(STUMessage):
+
+    def __init__(self, error_msg):
+        self.msg = error_msg
+
+    def get_representation(self):
+        return self.msg + "\n"
+
+
+class STUByemessage(STUMessage):
+
+    REPR_DEBUG_FALSE = "Quitting the game. Bye!"
+    REPR_DEBUG_TRUE = """
+You are in debug mode now and your connection will not be shut down. You will continue receiving
+debug messages, but will not be able to send new ones.
+To totally terminate your connection try pressing ^C (CTRL-C) or killing the process if the former does not work.
+"""
+
+    def __init__(self, debug):
+        self.debug = debug
+
+    def get_representation(self):
+        if self.debug:
+            return self.REPR_DEBUG_TRUE
+        return self.REPR_DEBUG_FALSE
 
 
 UTSMessage.message_types = (UTSLookMessage, UTSDigMessage, UTSFlagMessage, UTSDeflagMessage,

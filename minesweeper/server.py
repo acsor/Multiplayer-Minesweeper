@@ -2,8 +2,9 @@ from argparse import ArgumentParser
 from concurrent.futures import ThreadPoolExecutor
 from socket import *
 from sys import argv
+from functools import partial
 
-from minesweeper.board import Board
+from minesweeper.board import Board, State
 from minesweeper.message import *
 
 
@@ -82,8 +83,7 @@ class MineSweeperServer:
                 self.debug
             )
             future = self.executor.submit(connection)
-            future.add_done_callback(self.make_shutdown_client())
-            future.add_done_callback(self.make_auto_close())
+            future.add_done_callback(self._make_callback_shutdown_client())
 
             self.futures_to_connections[future] = connection
 
@@ -92,34 +92,21 @@ class MineSweeperServer:
     def is_full(self):
         return len(self.futures_to_connections) >= self.DEFAULTS["max_clients"]
 
-    # Perhaps not the most elegant way to fix the argument passing of Future's add_done_callback(), but I expect
-    # this closure to work, and this is what matters at the moment of this writing.
-    # A future improvement may be something to consider.
-    def make_shutdown_client(self):
+    def _make_callback_shutdown_client(self):
 
-        def shutdown_client(future):
-            if future is not None:
-                connection = self.futures_to_connections[future]
+        def _callback_shutdown_client(future):
+            connection = self.futures_to_connections[future]
 
-                if connection is not None:
-                    connection.close()
+            if not connection.debug:
+                connection.close()
                 future.cancel()
-                del self.futures_to_connections[future]
+                self.futures_to_connections.pop(future)
 
-                if self.debug:
-                    print("Connection closed: %d/%d still running" %
-                          (len(self.futures_to_connections), self.DEFAULTS["max_clients"]))
+            if self.debug:
+                print("Connection closed: %d/%d still running" %
+                      (len(self.futures_to_connections), self.DEFAULTS["max_clients"]))
 
-        return shutdown_client
-
-    def make_auto_close(self):
-
-        def auto_close(future):
-            if len(self.futures_to_connections) == 0:
-                self.close()
-
-        return auto_close
-
+        return _callback_shutdown_client
 
 class Connection:
 
@@ -141,6 +128,8 @@ class Connection:
         if self.debug:
             print("%s:%s connected" % self.client.getpeername())
 
+        self.client.send(STUHelloMessage(-1).get_representation().encode())
+
         # TO-DO Verify open() is being used correctly
         with open(self.client.fileno()) as stream:
             in_message = UTSMessage.parse_infer_type(stream.readline())
@@ -149,8 +138,15 @@ class Connection:
                 if self.debug:
                     print("%s: %s" % (self.client, in_message))
 
-                out_message = self._craft_out_from_in_message(UTSMessage.parse_infer_type(in_message))
-                in_message = UTSMessage.parse_infer_type(stream.readline())
+                out_message = self._process_in_message(in_message)
+                self.client.send(out_message.get_representation().encode())
+
+                if isinstance(out_message, STUBoomMessage):
+                    in_message = None
+                elif isinstance(out_message, STUByemessage):
+                    in_message = None
+                else:
+                    in_message = UTSMessage.parse_infer_type(stream.readline())
 
     def close(self):
         client_string = str(self.client)
@@ -161,21 +157,39 @@ class Connection:
         if self.debug:
             print("%s closed" % client_string)
 
-    def _craft_out_from_in_message(self, in_message):
+    def _process_in_message(self, in_message):
         result = None
 
         if isinstance(in_message, UTSLookMessage):
-            pass
+            result = STUBoardMessage(self.board)
         elif isinstance(in_message, UTSDigMessage):
-            pass
+            error = in_message.find_errors(self.board)
+
+            if error is None:
+                self.board.set_state(in_message.row, in_message.col, State.DUG)
+                square = self.board.square(in_message.row, in_message.col)
+
+                if square.has_bomb:
+                    square.has_bomb = False
+                    result = STUBoomMessage()
+                else:
+                    result = STUBoardMessage(self.board)
+            else:
+                result = STUErrorMessage(error)
         elif isinstance(in_message, UTSFlagMessage):
-            pass
+            self.board.set_state(in_message.row, in_message.col, State.FLAGGED)
+            result = STUBoardMessage(self.board)
         elif isinstance(in_message, UTSDeflagMessage):
-            pass
+            square = self.board.square(in_message.row, in_message.col)
+
+            if square.state == State.FLAGGED:
+                self.board.set_state(in_message.row, in_message.col, State.UNTOUCHED)
+
+            result = STUBoardMessage(self.board)
         elif isinstance(in_message, UTSHelpRequestMessage):
-            pass
+            result = STUHelpMessage()
         elif isinstance(in_message, UTSByeMessage):
-            pass
+            result = STUByemessage(self.debug)
 
         return result
 
@@ -205,7 +219,7 @@ def main():
     elif arguments.file is not None:
         board = Board.create_from_file(arguments.file)
     else:
-        board = Board.create_from_probability(defaults["size"])
+        board = Board.create_from_probability(defaults["size"], defaults["size"])
 
     if arguments.port is not None:
         port = arguments.port

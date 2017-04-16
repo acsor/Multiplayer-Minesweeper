@@ -148,6 +148,9 @@ class Board:
     def __iter__(self):
         return chain(*self.squares)
 
+    def square(self, row, col):
+        return self.squares[row][col]
+
     def height(self):
         return len(self.squares)
 
