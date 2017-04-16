@@ -9,6 +9,7 @@ class Message(object):
         return self.get_representation()
 
 
+# TO-DO How to mark some classes as abstract?
 class UTSMessage(Message):
     """
     A UTSMessage (User-To-Server message) is a superclass for all those classes representing
@@ -16,10 +17,6 @@ class UTSMessage(Message):
     """
 
     message_types = ()  # Assigned at the bottom of the file
-
-    @classmethod
-    def parse(cls, raw_input):
-        return cls._message_factory(raw_input.strip())
 
     @staticmethod
     def parse_infer_type(raw_input):
@@ -48,6 +45,10 @@ class UTSMessage(Message):
         #     )
 
         return result
+
+    @classmethod
+    def parse(cls, raw_input):
+        return cls._message_factory(raw_input.strip())
 
     @classmethod
     def _message_factory(cls, factory_string):
@@ -207,25 +208,46 @@ class STUMessage(Message):
 
 
 class STUBoardMessage(STUMessage):
+
     def __init__(self, board):
         self.board = board
 
     def get_representation(self):
-        return str(self.board)
+        return str(self.board) + "\n"
 
 
 class STUBoomMessage(STUMessage):
 
-    REPR = "BOOM!"
+    REPR = "BOOM!\n"
 
     def get_representation(self):
         return self.REPR
 
 
 class STUHelpMessage(STUMessage):
-    # TO-DO Finish implementing this class
+
     REPR = """
-    Function still not implemented
+    \t*** Minesweeper commands help ***
+    \tlook
+    \t\tReturns a representation of the board. No mutation occurs on the board.
+
+    \tdig <row> <col>
+    \t\tAttempts to dig a given cell. Index errors or a dug mine are indicated automatically\
+    if any of them occurs. Else a response like from a "look" message is sent.
+
+    \tflag <row> <col>
+    \t\tMarks a cell with a flag. This command does not behave as a toggle. A second flag message\
+    on the same cell will not unflag it.
+
+    \tdeflag <row> <col>
+    \t\tDeflags the indicated cell, or leaves it unchanged if it was unflagged.
+
+    \thelp
+    \t\tAsks this message to be sent.
+
+    \tbye
+    \t\tCloses the connection, ending the game for the user who submitted the message.
+
     """
 
     def get_representation(self):
@@ -233,15 +255,17 @@ class STUHelpMessage(STUMessage):
 
 
 class STUHelloMessage(STUMessage):
-    # Decide what arguments the constructor of this class should take to know the number
-    # of playing users.
+
     REPR = """
-    Welcome to Minesweeper. An unknown number of people is playing including you.
-    Type 'help' for help.
+    Welcome to Minesweeper. %d people are playing including you.
+    Type 'help' for help.\n
     """
 
+    def __init__(self, users_number):
+        self.users = users_number
+
     def get_representation(self):
-        return self.REPR
+        return self.REPR % self.users
 
 
 UTSMessage.message_types = (UTSLookMessage, UTSDigMessage, UTSFlagMessage, UTSDeflagMessage,

@@ -1,9 +1,10 @@
-from socket import *
-from minesweeper.message import *
-from concurrent.futures import Future, ThreadPoolExecutor
 from argparse import ArgumentParser
-from minesweeper.board import Board, State
+from concurrent.futures import ThreadPoolExecutor
+from socket import *
 from sys import argv
+
+from minesweeper.board import Board
+from minesweeper.message import *
 
 
 class MineSweeperServer:
