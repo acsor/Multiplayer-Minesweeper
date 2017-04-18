@@ -56,7 +56,7 @@ class Board:
         if height * width <= 0:
             raise ValueError("The grid size must be greater than 0 (found %d)" % height * width)
         if not 0 <= bomb_probability < 1:
-            raise ValueError("It must be 0 <= bomb_probability <= 1 (bomb_probability = %d" % bomb_probability)
+            raise ValueError("It must be 0 <= bomb_probability <= 1 (bomb_probability = %d)" % bomb_probability)
 
         squares = list()
 
@@ -71,8 +71,8 @@ class Board:
 
         if height * width <= 0:
             raise ValueError("The grid size must be greater than 0 (found %d)" % height * width)
-        if mines < 0:
-            raise ValueError("The number of mines must be at least 0 (found %d)" % mines)
+        if not 0 < mines < height * width:
+            raise ValueError("0 < mines < %d not true (mines = %d)" % (height * width, mines))
 
         squares = Board._random_mines_distribution((height * width) - mines, mines)
 
@@ -105,7 +105,7 @@ class Board:
 
     def __repr__(self):
         return "<'%s.%s' object, height=%d, width=%d, mines_count=%d>" % \
-               (self.__class__.__module__, self.__class__.__name__, len(self.squares), self.width(), self.mines_count())
+               (self.__class__.__module__, self.__class__.__name__, self.height(), self.width(), self.mines_count())
 
     def __str__(self):
 

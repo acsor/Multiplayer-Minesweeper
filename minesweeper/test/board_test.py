@@ -88,14 +88,14 @@ class BoardTest(TestCase):
             )
 
 
-class BoardFreeTest:
+class UncheckedBoardTest:
 
     @staticmethod
     def test_free():
         """
-            Utily method to see some console output when debugging the code, as the unittest framework captures it and it didn't
-            seem straightforward to me displaying it.
-            """
+        Utily method to see some console output when debugging the code, as the unittest framework captures it and
+        it didn't seem straightforward to me displaying it.
+        """
         b = Board.create_from_difficulty()
 
         b.set_state(0, 1, State.DUG)
@@ -125,5 +125,5 @@ class BoardFreeTest:
 
 
 if __name__ == "__main__":
-    # unittest.main(BoardTest)
-    BoardFreeTest.test_create_probability(15)
+    unittest.main(BoardTest)
+    # BoardFreeTest.test_create_probability(15)

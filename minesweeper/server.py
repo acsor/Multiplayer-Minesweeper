@@ -1,3 +1,4 @@
+import concurrent.futures
 import sys
 from argparse import ArgumentParser
 from concurrent.futures import ThreadPoolExecutor
@@ -22,12 +23,13 @@ class MineSweeperServer:
     def __init__(self, board, port=DEFAULT_CONFIGS["port"], debug=False):
         self.board = board
         self.futures_to_connections = dict()
+        self.max_clients = self.DEFAULT_CONFIGS["max_clients"]
 
         self.server = socket(AF_INET, SOCK_STREAM)
         self.server.bind((self.DEFAULT_CONFIGS["host"], port))
-        self.server.listen(self.DEFAULT_CONFIGS["listen_backlog"])
+        self.server.listen(self.max_clients)
 
-        self.executor = ThreadPoolExecutor(self.DEFAULT_CONFIGS["max_clients"])
+        self.executor = ThreadPoolExecutor(self.max_clients + 1)
         self.is_closed = False
 
         self.logger = getLogger(__name__)
@@ -46,7 +48,7 @@ class MineSweeperServer:
             host = port = repr_unknown
 
         return "<'%s.%s' object, host=%s, port=%s, debug=%s>" %\
-               (MineSweeperServer.__module__, self.__class__.__name__, host, port, self.is_debug_active())
+               (MineSweeperServer.__module__, self.__class__.__name__, host, port, self.is_debug_enabled())
 
     def __del__(self):
         if not self.is_closed:
@@ -56,44 +58,40 @@ class MineSweeperServer:
         self.executor.shutdown(False)
 
         self.server.shutdown(SHUT_RDWR)
-        self.server.detach()
         self.server.close()
         del self.server
 
         self.is_closed = True
 
-        self.logger.debug(repr(self))
+        self.logger.debug("%s was closed" % repr(self))
 
     def connections(self):
         return self.futures_to_connections.values()
 
-    def run_next_connection(self):
-        # The block of code below may be deleted, as ThreadPoolExecutor's constructor supports
-        # specifying the number of max worker threads. TO-DO Delete the block below, if it isn't
-        # needed.
+    def next_connection(self):
         if self.is_full():
             self.logger.debug(
                 "Reached maximum number of connections: %d/%d occupied",
-                len(self.futures_to_connections), self.DEFAULT_CONFIGS["max_clients"]
+                len(self.futures_to_connections), self.max_clients
             )
             return None
         else:
             connection = Connection(
-                self.board,
+                self,
                 self.server.accept()[0],
-                self.is_debug_active()
+                self.is_debug_enabled()
             )
             future = self.executor.submit(connection)
             future.add_done_callback(self._make_callback_shutdown_client())
 
             self.futures_to_connections[future] = connection
 
-            return future, self.futures_to_connections[future]
+            return future
 
     def is_full(self):
-        return len(self.futures_to_connections) >= self.DEFAULT_CONFIGS["max_clients"]
+        return len(self.futures_to_connections) >= self.max_clients
 
-    def is_debug_active(self):
+    def is_debug_enabled(self):
         return NullHandler not in (type(h) for h in self.logger.handlers)
 
     def _make_callback_shutdown_client(self):
@@ -101,15 +99,13 @@ class MineSweeperServer:
         def _callback_shutdown_client(future):
             connection = self.futures_to_connections[future]
 
-            if not connection.is_debug_active():
-                connection.close()
-                future.cancel()
-                self.futures_to_connections.pop(future)
+            connection.close()
+            self.futures_to_connections.pop(future)
 
             self.logger.debug(
                 "Connection closed: %d/%d still running",
                 len(self.futures_to_connections),
-                self.DEFAULT_CONFIGS["max_clients"]
+                self.max_clients
             )
 
         return _callback_shutdown_client
@@ -117,21 +113,25 @@ class MineSweeperServer:
 
 class Connection:
 
-    def __init__(self, board, client, debug=False):
-        self.board = board
-        self.client = client
+    def __init__(self, ms_server: MineSweeperServer, client: socket, debug=False):
+        self.server = ms_server
+        self.board = self.server.board
+        self.client: socket = client
+
+        self.is_closed = False
         self.logger = getLogger(__name__)
 
     def __repr__(self):
         return repr(self.client)
 
     def __del__(self):
-        self.close()
+        if not self.is_closed:
+            self.close()
 
     def __call__(self, *args, **kwargs):
-        return self.start()
+        return self.run()
 
-    def start(self):
+    def run(self):
         self.logger.debug("%s:%s connected", *self.client.getpeername())
 
         self.client.send(STUHelloMessage(-1).get_representation().encode())
@@ -148,20 +148,23 @@ class Connection:
 
                 if isinstance(out_message, STUBoomMessage):
                     in_message = None
-                elif isinstance(out_message, STUByemessage):
+                elif isinstance(out_message, STUByeMessage):
                     in_message = None
                 else:
                     in_message = UTSMessage.parse_infer_type(stream.readline())
 
     def close(self):
-        client_string = str(self.client)
+        addrinfo = str(self.client)
 
         if self.client is not None:
+            self.client.shutdown(SHUT_RDWR)
             self.client.close()
 
-        self.logger.debug("%s closed", client_string)
+        self.is_closed = True
 
-    def is_debug_active(self):
+        self.logger.debug("'%s' closed", addrinfo)
+
+    def is_debug_enabled(self):
         return NullHandler not in (type(h) for h in self.logger.handlers)
 
     def _process_in_message(self, in_message):
@@ -184,19 +187,32 @@ class Connection:
             else:
                 result = STUErrorMessage(error)
         elif isinstance(in_message, UTSFlagMessage):
-            self.board.set_state(in_message.row, in_message.col, State.FLAGGED)
-            result = STUBoardMessage(self.board)
+            error = in_message.find_errors(self.board)
+
+            if error is None:
+                self.board.set_state(in_message.row, in_message.col, State.FLAGGED)
+
+                result = STUBoardMessage(self.board)
+            else:
+                result = STUErrorMessage(error)
         elif isinstance(in_message, UTSDeflagMessage):
-            square = self.board.square(in_message.row, in_message.col)
+            error = in_message.find_errors(self.board)
 
-            if square.state == State.FLAGGED:
-                self.board.set_state(in_message.row, in_message.col, State.UNTOUCHED)
+            if error is None:
+                square = self.board.square(in_message.row, in_message.col)
 
-            result = STUBoardMessage(self.board)
+                if square.state == State.FLAGGED:
+                    self.board.set_state(in_message.row, in_message.col, State.UNTOUCHED)
+
+                result = STUBoardMessage(self.board)
+            else:
+                result = STUErrorMessage(error)
         elif isinstance(in_message, UTSHelpRequestMessage):
             result = STUHelpMessage()
         elif isinstance(in_message, UTSByeMessage):
-            result = STUByemessage(self.is_debug_active())
+            result = STUByeMessage()
+        elif isinstance(in_message, UTSInvalidMessage):
+            result = in_message.stu_error_message_factory()
 
         return result
 
@@ -207,12 +223,13 @@ def main():
         "port": MineSweeperServer.DEFAULT_CONFIGS["port"],
         "program_name": "Minesweeper server",
     }
+    logger = getLogger(__name__)
     ap = ArgumentParser(defaults["program_name"])
 
     ap.add_argument("-d", "--debug", dest="debug", action="store", type=is_boolean,
                     required=True, help="Debug flag for server")
     ap.add_argument("-p", "--port", dest="port", action="store", type=int,
-                    default=defaults["port"], help="Local port where to connect the server")
+                    default=defaults["port"], help="Local port where to bind the server")
 
     creation_group = ap.add_mutually_exclusive_group()
     creation_group.add_argument("-s", "--size", dest="size", action="store", type=int,
@@ -230,11 +247,21 @@ def main():
         board = Board.create_from_probability(defaults["size"], defaults["size"])
 
     server = MineSweeperServer(board, arguments.port, arguments.debug)
-    server.run_next_connection()
+    server.next_connection()
 
-    while len(server.connections()) > 0:
-        if not server.is_closed and not server.is_full():
-            server.run_next_connection()
+    while True:
+        try:
+            if server.is_full():
+                logger.debug(
+                    "Server full (%d/%d connections occupied). Waiting for older ones to be freed...",
+                    len(server.connections()),
+                    server.max_clients
+                )
+                concurrent.futures.wait(server.futures_to_connections.keys(), None, concurrent.futures.FIRST_COMPLETED)
+            else:
+                server.next_connection()
+        except KeyboardInterrupt:
+            break
 
     server.close()
 

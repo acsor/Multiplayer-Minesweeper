@@ -10,11 +10,11 @@ class ServerTest:
         self.server = MineSweeperServer(None, debug=True)
 
     def test_default(self):
-        self.server.run_next_connection()
+        self.server.next_connection()
 
         while len(self.connections()) > 0 and not self.server.is_closed:
             if not self.server.is_full():
-                self.server.run_next_connection()
+                self.server.next_connection()
 
     def close(self):
         if self.server is not None:

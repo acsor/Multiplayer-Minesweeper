@@ -9,7 +9,7 @@ class Message(object):
         return self.get_representation()
 
 
-# TO-DO How to mark some classes as abstract?
+# noinspection PyAbstractClass
 class UTSMessage(Message):
     """
     A UTSMessage (User-To-Server message) is a superclass for all those classes representing
@@ -25,7 +25,8 @@ class UTSMessage(Message):
         was a valid string for static instantiation.
 
         :param raw_input: string to feed into a factory method.
-        :return: object of a concrete UTSMessage class, or None if the method fails (e.g. raw_input is invalid).
+        :return: object of a concrete UTSMessage class, or an instance of UTSInvalidMessage if the method fails
+            (e.g. raw_input is "invalid").
         """
         result = None
 
@@ -38,11 +39,8 @@ class UTSMessage(Message):
             except Exception:
                 continue
 
-        # if result is None:
-        #     raise ValueError(
-        #         "\"%s\" couldn't be used to build an instance of any of the following classes:\n%s" %
-        #         (raw_input, str(UTSMessage.message_types))
-        #     )
+        if result is None:
+            result = UTSInvalidMessage.parse(raw_input)
 
         return result
 
@@ -55,7 +53,6 @@ class UTSMessage(Message):
         """
         Creates an instance of a concrete UTSMessage class by using a factory method.
 
-        :param board: shared board instance.
         :param factory_string: string to construct a new object from.
         :return: a new instance whose class is a subtype of UTSMessage.
         """
@@ -94,7 +91,7 @@ class UTSLookMessage(UTSMessage):
 class UTSDigMessage(UTSMessage):
 
     REPR_PREFIX = "dig"
-    ERROR_OUT_OF_BOUNDS = "The coordinates %d, %d are not contained within the board"
+    ERROR_OUT_OF_BOUNDS = "Error. The coordinates %d, %d are not contained within the board"
 
     def __init__(self, row, col):
         self.row = row
@@ -121,10 +118,9 @@ class UTSDigMessage(UTSMessage):
         return "%s %d %d" % (self.REPR_PREFIX, self.row, self.col)
 
     def find_errors(self, board):
-        if (self.row, self.col) in board:
-            return None
-        else:
+        if (self.row, self.col) not in board:
             return self.ERROR_OUT_OF_BOUNDS % (self.row, self.col)
+        return None
 
 
 class UTSFlagMessage(UTSMessage):
@@ -199,7 +195,7 @@ class UTSByeMessage(UTSMessage):
 
     @classmethod
     def _message_factory(cls, factory_string):
-        if cls.REPR == factory_string:
+        if cls.REPR == factory_string or factory_string == "-1":
             return UTSByeMessage()
         else:
             raise ValueError("Expected %s, found %s" % (cls.REPR, factory_string))
@@ -211,6 +207,29 @@ class UTSByeMessage(UTSMessage):
         return None
 
 
+# noinspection PyAbstractClass
+class UTSInvalidMessage(UTSMessage):
+    """
+    UTSInvalidMessage represents any type of string which cannot be used to instantiate one of the other
+    concrete UTSMessage classes.
+    """
+    STU_FACTORY = "Error. '%s' was not understood"
+
+    def __init__(self, input):
+        self.repr = input
+
+    @classmethod
+    def _message_factory(cls, factory_string):
+        return UTSInvalidMessage(str(factory_string))
+
+    def get_representation(self):
+        return self.repr
+
+    def stu_error_message_factory(self):
+        return STUErrorMessage(self.STU_FACTORY % self.repr)
+
+
+# noinspection PyAbstractClass
 class STUMessage(Message):
     """
     A STUMessage (Server-To-User message) is the counterpart of a USTMessage, and is any kind
@@ -230,7 +249,7 @@ class STUBoardMessage(STUMessage):
 
 class STUBoomMessage(STUMessage):
 
-    REPR = "BOOM!\n"
+    REPR = "You hit a mine!\n"
 
     def get_representation(self):
         return self.REPR
@@ -239,7 +258,7 @@ class STUBoomMessage(STUMessage):
 class STUHelpMessage(STUMessage):
 
     REPR = """
-\t\t*** MINESWEEPER COMMANDS HELP ***
+### MINESWEEPER COMMANDS HELP ###
 look
 \tReturns a representation of the board. No mutation occurs on the board.
 
@@ -289,22 +308,12 @@ class STUErrorMessage(STUMessage):
         return self.msg + "\n"
 
 
-class STUByemessage(STUMessage):
+class STUByeMessage(STUMessage):
 
-    REPR_DEBUG_FALSE = "Quitting the game. Bye!"
-    REPR_DEBUG_TRUE = """
-You are in debug mode now and your connection will not be shut down. You will continue receiving
-debug messages, but will not be able to send new ones.
-To totally terminate your connection try pressing ^C (CTRL-C) or killing the process if the former does not work.
-"""
-
-    def __init__(self, debug):
-        self.debug = debug
+    REPR = "Quitting the game. Bye!\n"
 
     def get_representation(self):
-        if self.debug:
-            return self.REPR_DEBUG_TRUE
-        return self.REPR_DEBUG_FALSE
+        return self.REPR
 
 
 UTSMessage.message_types = (UTSLookMessage, UTSDigMessage, UTSFlagMessage, UTSDeflagMessage,
