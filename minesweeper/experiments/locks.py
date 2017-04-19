@@ -34,7 +34,7 @@ class Counter:
 
 class StringStretcher:
     """
-    A StringStretcher object lengthens a string s by an increment i by a specified number of times n.
+    A StringStretcher object lengthens a string s by an increment i a specified number of times n.
     It can also shorten the string s.
     """
     SLEEP_TIME = 0.025
@@ -72,7 +72,7 @@ class StringStretcher:
 def main():
     configs = {
         "threads": 50,
-        "cycles": 10000,
+        "cycles": 2000,
     }
     s = StringStretcher("A", "a")
     executor = ThreadPoolExecutor(configs["threads"])
