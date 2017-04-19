@@ -91,7 +91,7 @@ class UTSLookMessage(UTSMessage):
 class UTSDigMessage(UTSMessage):
 
     REPR_PREFIX = "dig"
-    ERROR_OUT_OF_BOUNDS = "Error. The coordinates %d, %d are not contained within the board"
+    ERROR_OUT_OF_BOUNDS = "Error. The coordinates %d, %d are not contained within the board."
 
     def __init__(self, row, col):
         self.row = row
@@ -213,7 +213,7 @@ class UTSInvalidMessage(UTSMessage):
     UTSInvalidMessage represents any type of string which cannot be used to instantiate one of the other
     concrete UTSMessage classes.
     """
-    STU_FACTORY = "Error. '%s' was not understood"
+    STU_FACTORY = "Error. '%s' was not understood."
 
     def __init__(self, input):
         self.repr = input
@@ -258,7 +258,7 @@ class STUBoomMessage(STUMessage):
 class STUHelpMessage(STUMessage):
 
     REPR = """
-### MINESWEEPER COMMANDS HELP ###
+*** MINESWEEPER COMMANDS HELP ***
 look
 \tReturns a representation of the board. No mutation occurs on the board.
 

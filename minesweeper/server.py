@@ -1,10 +1,10 @@
 import concurrent.futures
-import sys
 from argparse import ArgumentParser
 from concurrent.futures import ThreadPoolExecutor
 from logging import *
 from socket import *
-from sys import argv
+from sys import argv, stdout
+from time import sleep
 
 from minesweeper.board import Board, State
 from minesweeper.message import *
@@ -15,7 +15,7 @@ class MineSweeperServer:
 
     DEFAULT_CONFIGS = {
         "host": '',
-        "port": 3666,
+        "port": 3111,
         "listen_backlog": 0,
         "max_clients": 4
     }
@@ -30,11 +30,12 @@ class MineSweeperServer:
         self.server.listen(self.max_clients)
 
         self.executor = ThreadPoolExecutor(self.max_clients + 1)
+
         self.is_closed = False
 
         self.logger = getLogger(__name__)
         self.logger.setLevel(DEBUG)
-        self.logger.addHandler(StreamHandler(sys.stdout) if debug else NullHandler())
+        self.logger.addHandler(StreamHandler(stdout) if debug else NullHandler())
 
         self.logger.debug("Listening at port %d...", port)
 
@@ -55,15 +56,16 @@ class MineSweeperServer:
             self.close()
 
     def close(self):
-        self.executor.shutdown(False)
+        if not self.is_closed:
+            self.executor.shutdown(False)
 
-        self.server.shutdown(SHUT_RDWR)
-        self.server.close()
-        del self.server
+            self.server.shutdown(SHUT_RDWR)
+            self.server.close()
+            del self.server
 
-        self.is_closed = True
+            self.is_closed = True
 
-        self.logger.debug("%s was closed" % repr(self))
+            self.logger.debug("%s was closed" % repr(self))
 
     def connections(self):
         return self.futures_to_connections.values()
@@ -134,7 +136,14 @@ class Connection:
     def run(self):
         self.logger.debug("%s:%s connected", *self.client.getpeername())
 
-        self.client.send(STUHelloMessage(-1).get_representation().encode())
+        # TO-DO Could the line of code below be subject to a race condition?
+        connections = len(self.server.connections())
+        if self not in self.server.connections():
+            connections += 1
+
+        self.client.send(
+            STUHelloMessage(connections).get_representation().encode()
+        )
 
         # TO-DO Verify open() is being used correctly
         with open(self.client.fileno()) as stream:
@@ -154,15 +163,21 @@ class Connection:
                     in_message = UTSMessage.parse_infer_type(stream.readline())
 
     def close(self):
-        addrinfo = str(self.client)
+        if not self.is_closed:
+            addrinfo = str(self.client)
 
-        if self.client is not None:
-            self.client.shutdown(SHUT_RDWR)
-            self.client.close()
+            if self.client is not None:
+                try:
+                    # TO-DO Most of the times one or both of the two lines below raised an exception.
+                    # Finding out why and fixing the problem may be to consider.
+                    self.client.close()
+                    self.client.shutdown(SHUT_RDWR)
+                except OSError:
+                    pass
 
-        self.is_closed = True
+            self.is_closed = True
 
-        self.logger.debug("'%s' closed", addrinfo)
+            self.logger.debug("'%s' closed", addrinfo)
 
     def is_debug_enabled(self):
         return NullHandler not in (type(h) for h in self.logger.handlers)
@@ -218,18 +233,19 @@ class Connection:
 
 
 def main():
-    defaults = {
+    configs = {
         "size": 10,
         "port": MineSweeperServer.DEFAULT_CONFIGS["port"],
         "program_name": "Minesweeper server",
+        "sleep": 2,
     }
     logger = getLogger(__name__)
-    ap = ArgumentParser(defaults["program_name"])
+    ap = ArgumentParser(configs["program_name"])
 
     ap.add_argument("-d", "--debug", dest="debug", action="store", type=is_boolean,
                     required=True, help="Debug flag for server")
     ap.add_argument("-p", "--port", dest="port", action="store", type=int,
-                    default=defaults["port"], help="Local port where to bind the server")
+                    default=configs["port"], help="Local port where to bind the server")
 
     creation_group = ap.add_mutually_exclusive_group()
     creation_group.add_argument("-s", "--size", dest="size", action="store", type=int,
@@ -244,10 +260,9 @@ def main():
     elif arguments.file is not None:
         board = Board.create_from_file(arguments.file)
     else:
-        board = Board.create_from_probability(defaults["size"], defaults["size"])
+        board = Board.create_from_probability(configs["size"], configs["size"])
 
     server = MineSweeperServer(board, arguments.port, arguments.debug)
-    server.next_connection()
 
     while True:
         try:
@@ -258,6 +273,7 @@ def main():
                     server.max_clients
                 )
                 concurrent.futures.wait(server.futures_to_connections.keys(), None, concurrent.futures.FIRST_COMPLETED)
+                sleep(configs["sleep"])
             else:
                 server.next_connection()
         except KeyboardInterrupt:
