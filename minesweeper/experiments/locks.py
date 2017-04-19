@@ -1,5 +1,5 @@
 import threading
-import time
+from threading import Lock
 from concurrent.futures import ThreadPoolExecutor, wait, ALL_COMPLETED
 
 
@@ -9,71 +9,86 @@ class Counter:
 
     def __init__(self, start_count=0):
         self.count = start_count
+        self.lock = threading.Lock()
 
     def __str__(self):
-        return str(self.count)
+        with self.lock:
+            return str(self.count)
 
     def increment(self, times=1):
+        self.lock.acquire()
+
         for i in range(times):
             self.count += 1
 
+        self.lock.release()
+
     def decrement(self, times=1):
+        self.lock.acquire()
+
         for i in range(times):
             self.count -= 1
+
+        self.lock.release()
 
 
 class StringStretcher:
     """
     A StringStretcher object lengthens a string s by an increment i by a specified number of times n.
     It can also shorten the string s.
-
-    **Note**: This class does not currently work as intended (it seems impossible to cause race
-    conditions).
     """
     SLEEP_TIME = 0.025
 
-    def __init__(self, string, increment):
+    def __init__(self, string, addition):
         self.string: str = string
-        self.increment: str = increment
+        self.addition: str = addition
+        self.lock = Lock()
 
     def __str__(self):
-        return str(self.string)
+        with self.lock:
+            return str(self.string)
 
     def __len__(self):
-        return len(self.string)
+        with self.lock:
+            return len(self.string)
 
-    def add(self, times=1):
+    def increment(self, times=1):
+        self.lock.acquire()
+
         for i in range(times):
-            time.sleep(self.SLEEP_TIME)
-            # noinspection PyAugmentAssignment
-            self.string = self.string + self.increment
+            self.string += self.addition
 
-    def subtract(self, times=1):
+        self.lock.release()
+
+    def decrement(self, times=1):
+        self.lock.acquire()
+
         for i in range(min(len(self.string), times)):
-            time.sleep(self.SLEEP_TIME)
             self.string = self.string[:-1]
+
+        self.lock.release()
 
 
 def main():
     configs = {
-        "workers": 11,
-        "cycles": 10,
+        "threads": 50,
+        "cycles": 10000,
     }
-    c = Counter()
-    executor = ThreadPoolExecutor(configs["workers"])
+    s = StringStretcher("A", "a")
+    executor = ThreadPoolExecutor(configs["threads"])
     futures = list()
 
-    for i in range(configs["workers"]):
+    for i in range(configs["threads"]):
         futures.append(
             executor.submit(
-                c.increment if i < configs["workers"] // 2 else c.decrement,
+                s.increment,
                 configs["cycles"]
             )
         )
 
     wait(futures, None, ALL_COMPLETED)
 
-    print(c)
+    print(len(s))
 
 
 if __name__ == "__main__":

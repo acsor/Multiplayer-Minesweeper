@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c4fccf25-67ce-4ee7-be23-9be45e868270" name="Default" comment="K">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/minesweeper/experiments/locks.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/minesweeper/experiments/race_condition.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/minesweeper/experiments/argparse_test.py" afterPath="$PROJECT_DIR$/minesweeper/experiments/argparse.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/minesweeper/experiments/asyncio_test.py" afterPath="$PROJECT_DIR$/minesweeper/experiments/asyncio.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/minesweeper/experiments/server_test.py" afterPath="$PROJECT_DIR$/minesweeper/experiments/server.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/minesweeper/experiments/locks.py" afterPath="$PROJECT_DIR$/minesweeper/experiments/locks.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/minesweeper/server.py" afterPath="$PROJECT_DIR$/minesweeper/server.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -39,31 +34,26 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="locks.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="locks.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/minesweeper/experiments/locks.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="65" column="0" lean-forward="false" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+            <state relative-caret-position="234">
+              <caret line="73" column="19" lean-forward="false" selection-start-line="73" selection-start-column="19" selection-end-line="73" selection-end-column="19" />
               <folding>
                 <element signature="e#0#16#0" expanded="true" />
-                <element signature="e#122#456#0" expanded="false" />
-                <element signature="e#246#268#0" expanded="false" />
-                <element signature="e#486#1377#0" expanded="false" />
-                <element signature="e#486#751#1" expanded="false" />
-                <element signature="e#925#948#0" expanded="false" />
-                <element signature="e#1307#1377#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="race_condition.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/minesweeper/experiments/race_condition.py">
+      <file leaf-file-name="board.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/minesweeper/board.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="378">
-              <caret line="21" column="38" lean-forward="false" selection-start-line="21" selection-start-column="38" selection-end-line="21" selection-end-column="38" />
+            <state relative-caret-position="0">
+              <caret line="85" column="12" lean-forward="false" selection-start-line="85" selection-start-column="12" selection-end-line="85" selection-end-column="12" />
               <folding>
-                <element signature="e#0#16#0" expanded="true" />
+                <element signature="e#0#29#0" expanded="true" />
+                <element signature="e#5190#5546#1" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -107,6 +97,7 @@
         <option value="$PROJECT_DIR$/minesweeper/server.py" />
         <option value="$PROJECT_DIR$/minesweeper/experiments/locks_exp.py" />
         <option value="$PROJECT_DIR$/minesweeper/experiments/race_condition.py" />
+        <option value="$PROJECT_DIR$/minesweeper/experiments/locks.py" />
       </list>
     </option>
   </component>
@@ -255,7 +246,7 @@
       <recent name="$PROJECT_DIR$/minesweeper" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.race_condition">
+  <component name="RunManager" selected="Python.locks">
     <configuration default="false" name="server" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -270,6 +261,40 @@
       <module name="Problem set 6" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/minesweeper/server.py" />
       <option name="PARAMETERS" value="--debug true -p 3667 -f test/assets/board_8x8.ms" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="locks" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/minesweeper/experiments" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Problem set 6" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/minesweeper/experiments/locks.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="race_condition" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/minesweeper/experiments" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Problem set 6" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/minesweeper/experiments/race_condition.py" />
+      <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
@@ -313,40 +338,6 @@
       <option name="USE_PATTERN" value="false" />
       <option name="PARAMS" value="" />
       <option name="USE_PARAM" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="locks_exp" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/minesweeper/experiments" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="Problem set 6" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/minesweeper/experiments/locks.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="race_condition" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/minesweeper/experiments" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="Problem set 6" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/minesweeper/experiments/race_condition.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
@@ -485,15 +476,15 @@
     </configuration>
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Python.server" />
-      <item index="1" class="java.lang.String" itemvalue="Python tests.Nosetests in UTSMessageTest" />
-      <item index="2" class="java.lang.String" itemvalue="Python tests.Nosetests in BoardTest" />
-      <item index="3" class="java.lang.String" itemvalue="Python.locks_exp" />
-      <item index="4" class="java.lang.String" itemvalue="Python.race_condition" />
+      <item index="1" class="java.lang.String" itemvalue="Python.locks" />
+      <item index="2" class="java.lang.String" itemvalue="Python.race_condition" />
+      <item index="3" class="java.lang.String" itemvalue="Python tests.Nosetests in UTSMessageTest" />
+      <item index="4" class="java.lang.String" itemvalue="Python tests.Nosetests in BoardTest" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.race_condition" />
-        <item index="1" class="java.lang.String" itemvalue="Python.locks_exp" />
+        <item index="0" class="java.lang.String" itemvalue="Python.locks" />
+        <item index="1" class="java.lang.String" itemvalue="Python.race_condition" />
         <item index="2" class="java.lang.String" itemvalue="Python tests.Nosetests in BoardTest" />
         <item index="3" class="java.lang.String" itemvalue="Python tests.Nosetests in UTSMessageTest" />
         <item index="4" class="java.lang.String" itemvalue="Python.server" />
@@ -618,7 +609,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="35" />
+      <option name="time" value="36" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
@@ -883,13 +874,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/minesweeper/board.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="16">
-          <caret line="205" column="52" lean-forward="false" selection-start-line="205" selection-start-column="52" selection-end-line="205" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/minesweeper/message.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="376">
@@ -953,26 +937,31 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/minesweeper/experiments/locks.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="65" column="0" lean-forward="false" selection-start-line="65" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#16#0" expanded="true" />
-            <element signature="e#122#456#0" expanded="false" />
-            <element signature="e#246#268#0" expanded="false" />
-            <element signature="e#486#1377#0" expanded="false" />
-            <element signature="e#486#751#1" expanded="false" />
-            <element signature="e#925#948#0" expanded="false" />
-            <element signature="e#1307#1377#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/minesweeper/experiments/race_condition.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="378">
           <caret line="21" column="38" lean-forward="false" selection-start-line="21" selection-start-column="38" selection-end-line="21" selection-end-column="38" />
+          <folding>
+            <element signature="e#0#16#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/minesweeper/board.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="85" column="12" lean-forward="false" selection-start-line="85" selection-start-column="12" selection-end-line="85" selection-end-column="12" />
+          <folding>
+            <element signature="e#0#29#0" expanded="true" />
+            <element signature="e#5190#5546#1" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/minesweeper/experiments/locks.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="73" column="19" lean-forward="false" selection-start-line="73" selection-start-column="19" selection-end-line="73" selection-end-column="19" />
           <folding>
             <element signature="e#0#16#0" expanded="true" />
           </folding>
