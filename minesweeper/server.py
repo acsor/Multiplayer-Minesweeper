@@ -237,6 +237,7 @@ def main():
         "size": 10,
         "port": MineSweeperServer.DEFAULT_CONFIGS["port"],
         "program_name": "Minesweeper server",
+        "bomb_probability": 0.20,
         "sleep": 2,
     }
     logger = getLogger(__name__)
@@ -256,7 +257,11 @@ def main():
     arguments = ap.parse_args(argv[1:])
 
     if arguments.size is not None:
-        board = Board.create_from_probability(arguments.size, arguments.size)
+        board = Board.create_from_probability(
+            arguments.size,
+            arguments.size,
+            configs["bomb_probability"]
+        )
     elif arguments.file is not None:
         board = Board.create_from_file(arguments.file)
     else:

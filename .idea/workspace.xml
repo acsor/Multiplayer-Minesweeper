@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c4fccf25-67ce-4ee7-be23-9be45e868270" name="Default" comment="K">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/minesweeper/board.py" afterPath="$PROJECT_DIR$/minesweeper/board.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/minesweeper/server.py" afterPath="$PROJECT_DIR$/minesweeper/server.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/minesweeper/message.py" afterPath="$PROJECT_DIR$/minesweeper/message.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -21,11 +20,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="server.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="server.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/minesweeper/server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="666">
-              <caret line="265" column="0" lean-forward="true" selection-start-line="265" selection-start-column="0" selection-end-line="265" selection-end-column="0" />
+            <state relative-caret-position="-2779">
+              <caret line="17" column="20" lean-forward="false" selection-start-line="17" selection-start-column="20" selection-end-line="17" selection-end-column="20" />
               <folding>
                 <element signature="e#0#25#0" expanded="true" />
                 <element signature="e#5223#5304#0" expanded="false" />
@@ -35,11 +34,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="message.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="message.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/minesweeper/message.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="246">
+              <caret line="14" column="32" lean-forward="false" selection-start-line="14" selection-start-column="32" selection-end-line="14" selection-end-column="32" />
               <folding />
             </state>
           </provider>
@@ -48,10 +47,40 @@
       <file leaf-file-name="board.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/minesweeper/board.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="4608">
+              <caret line="339" column="8" lean-forward="false" selection-start-line="339" selection-start-column="8" selection-end-line="339" selection-end-column="8" />
               <folding>
                 <element signature="e#0#29#0" expanded="true" />
+                <element signature="e#4823#5613#0" expanded="false" />
+                <element signature="e#5673#6693#0" expanded="false" />
+                <element signature="e#10024#10646#0" expanded="false" />
+                <marker date="1492707740193" expanded="false" signature="3794:4741" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="board_test.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/minesweeper/test/board_test.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="144">
+              <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#15#0" expanded="true" />
+                <element signature="e#323#653#0" expanded="false" />
+                <element signature="e#692#1275#0" expanded="false" />
+                <element signature="e#777#922#0" expanded="false" />
+                <element signature="e#1071#1148#0" expanded="false" />
+                <element signature="e#1198#1275#0" expanded="false" />
+                <element signature="e#1315#1705#0" expanded="false" />
+                <element signature="e#1398#1465#0" expanded="false" />
+                <element signature="e#2083#2172#0" expanded="false" />
+                <element signature="e#2212#2746#0" expanded="false" />
+                <element signature="e#2247#2407#0" expanded="false" />
+                <element signature="e#2456#2567#0" expanded="false" />
+                <element signature="e#2618#2746#0" expanded="false" />
+                <element signature="e#3504#3694#1" expanded="false" />
+                <element signature="e#3786#3816#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -89,21 +118,21 @@
         <option value="$PROJECT_DIR$/minesweeper/test/asyncio_test.py" />
         <option value="$PROJECT_DIR$/minesweeper/utils.py" />
         <option value="$PROJECT_DIR$/minesweeper/test/assets/board_8x8.ms" />
-        <option value="$PROJECT_DIR$/minesweeper/test/board_test.py" />
         <option value="$PROJECT_DIR$/minesweeper/experiments/locks_exp.py" />
         <option value="$PROJECT_DIR$/minesweeper/experiments/race_condition.py" />
         <option value="$PROJECT_DIR$/minesweeper/experiments/locks.py" />
-        <option value="$PROJECT_DIR$/minesweeper/board.py" />
-        <option value="$PROJECT_DIR$/minesweeper/message.py" />
         <option value="$PROJECT_DIR$/minesweeper/server.py" />
+        <option value="$PROJECT_DIR$/minesweeper/board.py" />
+        <option value="$PROJECT_DIR$/minesweeper/test/board_test.py" />
+        <option value="$PROJECT_DIR$/minesweeper/message.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="-1" />
-    <option name="y" value="-24" />
-    <option name="width" value="1368" />
-    <option name="height" value="793" />
+    <option name="y" value="23" />
+    <option name="width" value="1282" />
+    <option name="height" value="1002" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -135,8 +164,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -223,12 +250,15 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="SearchEverywhereHistoryKey" value="8x8&#9;FILE&#9;file:///home/n0ne/programming/PyCharm/MIT OCW 6.005/Problem sets/Problem set 6/minesweeper/test/assets/board_8x8.ms&#10;Board&#9;FILE&#9;file:///home/n0ne/programming/PyCharm/MIT OCW 6.005/Problem sets/Problem set 6/minesweeper/board.py&#10;ignore&#9;null&#9;null&#10;server&#9;FILE&#9;file:///home/n0ne/programming/PyCharm/MIT OCW 6.005/Problem sets/Problem set 6/minesweeper/test/server_test.py&#10;board&#9;FILE&#9;file:///home/n0ne/programming/PyCharm/MIT OCW 6.005/Problem sets/Problem set 6/minesweeper/board.py&#10;weakre&#9;null&#9;null&#10;todo&#9;ACTION&#9;ActivateTODOToolWindow" />
+    <property name="SearchEverywhereHistoryKey" value="todo&#9;ACTION&#9;ActivateTODOToolWindow&#10;8x8&#9;FILE&#9;file:///home/n0ne/programming/PyCharm/MIT OCW 6.005/Problem sets/Problem set 6/minesweeper/test/assets/board_8x8.ms&#10;Board&#9;FILE&#9;file:///home/n0ne/programming/PyCharm/MIT OCW 6.005/Problem sets/Problem set 6/minesweeper/board.py&#10;ignore&#9;null&#9;null&#10;server&#9;FILE&#9;file:///home/n0ne/programming/PyCharm/MIT OCW 6.005/Problem sets/Problem set 6/minesweeper/test/server_test.py&#10;board&#9;FILE&#9;file:///home/n0ne/programming/PyCharm/MIT OCW 6.005/Problem sets/Problem set 6/minesweeper/board.py&#10;weakre&#9;null&#9;null" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
     <property name="last_opened_file_path" value="/usr/local/bin/python3.6" />
+    <property name="FullScreen" value="true" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -258,7 +288,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="Problem set 6" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/minesweeper/server.py" />
-      <option name="PARAMETERS" value="--debug true -p 3111 -f test/assets/board_8x8.ms" />
+      <option name="PARAMETERS" value="--debug true -p 3111 -s 15" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
@@ -296,25 +326,21 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
-    <configuration default="false" name="Nosetests in UTSMessageTest" type="tests" factoryName="Nosetests" temporary="true" nameIsGenerated="true">
+    <configuration default="false" name="board_test" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/minesweeper/test" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="Problem set 6" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/minesweeper/test/message_tests.py" />
-      <option name="CLASS_NAME" value="UTSMessageTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_CLASS" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="PARAMS" value="" />
-      <option name="USE_PARAM" value="false" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/minesweeper/test/board_test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
     <configuration default="false" name="Nosetests in BoardTest" type="tests" factoryName="Nosetests" temporary="true" nameIsGenerated="true">
@@ -476,16 +502,16 @@
       <item index="0" class="java.lang.String" itemvalue="Python.server" />
       <item index="1" class="java.lang.String" itemvalue="Python.locks" />
       <item index="2" class="java.lang.String" itemvalue="Python.race_condition" />
-      <item index="3" class="java.lang.String" itemvalue="Python tests.Nosetests in UTSMessageTest" />
+      <item index="3" class="java.lang.String" itemvalue="Python.board_test" />
       <item index="4" class="java.lang.String" itemvalue="Python tests.Nosetests in BoardTest" />
     </list>
     <recent_temporary>
       <list size="5">
         <item index="0" class="java.lang.String" itemvalue="Python.server" />
-        <item index="1" class="java.lang.String" itemvalue="Python.locks" />
-        <item index="2" class="java.lang.String" itemvalue="Python.race_condition" />
-        <item index="3" class="java.lang.String" itemvalue="Python tests.Nosetests in BoardTest" />
-        <item index="4" class="java.lang.String" itemvalue="Python tests.Nosetests in UTSMessageTest" />
+        <item index="1" class="java.lang.String" itemvalue="Python tests.Nosetests in BoardTest" />
+        <item index="2" class="java.lang.String" itemvalue="Python.board_test" />
+        <item index="3" class="java.lang.String" itemvalue="Python.locks" />
+        <item index="4" class="java.lang.String" itemvalue="Python.race_condition" />
       </list>
     </recent_temporary>
   </component>
@@ -510,35 +536,35 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Nosetests_in_BoardTest - 2017.04.13 at 19h 32m 48s.xml">
+    <history-entry file="Nosetests_in_BoardTest - 2017.04.20 at 17h 59m 56s.xml">
       <configuration name="Nosetests in BoardTest" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_BoardTest - 2017.04.13 at 19h 32m 50s.xml">
+    <history-entry file="Nosetests_in_BoardTest - 2017.04.20 at 18h 00m 10s.xml">
       <configuration name="Nosetests in BoardTest" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_BoardTest - 2017.04.13 at 19h 33m 10s.xml">
+    <history-entry file="Nosetests_in_BoardTest - 2017.04.20 at 18h 22m 03s.xml">
       <configuration name="Nosetests in BoardTest" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_BoardTest - 2017.04.13 at 19h 36m 58s.xml">
+    <history-entry file="Nosetests_in_BoardTest - 2017.04.20 at 18h 22m 14s.xml">
       <configuration name="Nosetests in BoardTest" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_BoardTest - 2017.04.13 at 19h 37m 37s.xml">
+    <history-entry file="Nosetests_in_BoardTest - 2017.04.20 at 18h 25m 39s.xml">
       <configuration name="Nosetests in BoardTest" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_BoardTest - 2017.04.13 at 19h 37m 53s.xml">
+    <history-entry file="Nosetests_in_BoardTest - 2017.04.20 at 19h 03m 14s.xml">
       <configuration name="Nosetests in BoardTest" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_BoardTest - 2017.04.13 at 19h 38m 11s.xml">
+    <history-entry file="Nosetests_in_BoardTest - 2017.04.20 at 19h 03m 27s.xml">
       <configuration name="Nosetests in BoardTest" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_BoardTest - 2017.04.13 at 22h 26m 38s.xml">
+    <history-entry file="Nosetests_in_BoardTest - 2017.04.20 at 19h 03m 36s.xml">
       <configuration name="Nosetests in BoardTest" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_BoardTest - 2017.04.18 at 22h 48m 00s.xml">
+    <history-entry file="Nosetests_in_BoardTest - 2017.04.20 at 19h 03m 49s.xml">
       <configuration name="Nosetests in BoardTest" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UTSMessageTest - 2017.04.18 at 22h 47m 41s.xml">
-      <configuration name="Nosetests in UTSMessageTest" configurationId="tests" />
+    <history-entry file="Nosetests_in_BoardTest - 2017.04.20 at 19h 03m 56s.xml">
+      <configuration name="Nosetests in BoardTest" configurationId="tests" />
     </history-entry>
   </component>
   <component name="TodoView">
@@ -551,20 +577,20 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1" y="-24" width="1368" height="793" extended-state="6" />
+    <frame x="-1" y="23" width="1282" height="1002" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33308932" sideWeight="0.4072022" order="3" side_tool="false" content_ui="combo" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32740742" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.35546875" sideWeight="0.4072022" order="3" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32704404" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32808024" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32132965" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.66962963" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3186583" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.66897506" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32740742" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.65789473" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33308932" sideWeight="0.59279776" order="5" side_tool="true" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.666205" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.6572327" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33308932" sideWeight="0.59279776" order="5" side_tool="true" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.6656184" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5166205" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5125786" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -597,13 +623,6 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/minesweeper/server.py</url>
-          <line>274</line>
-          <option name="timeStamp" value="36" />
-        </line-breakpoint>
-      </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
@@ -614,48 +633,18 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="38" />
+      <option name="time" value="41" />
     </breakpoint-manager>
     <watches-manager>
+      <configuration name="tests">
+        <watch expression="str(board)" language="Python" />
+      </configuration>
       <configuration name="PythonConfigurationType">
         <watch expression="server.futures_to_connections.keys()" language="Python" />
       </configuration>
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/minesweeper/message.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/minesweeper/board.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="558">
-          <caret line="31" column="8" lean-forward="false" selection-start-line="31" selection-start-column="8" selection-end-line="31" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/minesweeper/server.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1332">
-          <caret line="75" column="4" lean-forward="false" selection-start-line="75" selection-start-column="4" selection-end-line="75" selection-end-column="4" />
-          <folding>
-            <element signature="e#0#25#0" expanded="true" />
-            <element signature="e#5223#5304#0" expanded="false" />
-            <element signature="e#5789#7614#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/minesweeper/test/message_tests.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="11" lean-forward="false" selection-start-line="0" selection-start-column="11" selection-end-line="0" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/minesweeper/message.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -882,13 +871,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/minesweeper/test/board_test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="96" column="17" lean-forward="false" selection-start-line="96" selection-start-column="17" selection-end-line="96" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/local/lib/python3.6/concurrent/futures/thread.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="45">
@@ -901,7 +883,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="18">
           <caret line="240" column="6" lean-forward="false" selection-start-line="240" selection-start-column="6" selection-end-line="240" selection-end-column="6" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -910,26 +891,6 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/minesweeper/experiments/race_condition.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="21" column="38" lean-forward="false" selection-start-line="21" selection-start-column="38" selection-end-line="21" selection-end-column="38" />
-          <folding>
-            <element signature="e#0#16#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/minesweeper/experiments/locks.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#16#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -949,33 +910,91 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/minesweeper/board.py">
+    <entry file="file://$PROJECT_DIR$/minesweeper/experiments/argparse.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/minesweeper/experiments/asyncio.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/minesweeper/experiments/locks.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="218">
+          <caret line="74" column="18" lean-forward="false" selection-start-line="74" selection-start-column="18" selection-end-line="74" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/minesweeper/experiments/race_condition.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="21" column="38" lean-forward="false" selection-start-line="21" selection-start-column="38" selection-end-line="21" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/minesweeper/experiments/server.py" />
+    <entry file="file://$PROJECT_DIR$/minesweeper/experiments/__init__.py" />
+    <entry file="file://$PROJECT_DIR$/minesweeper/server.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2779">
+          <caret line="17" column="20" lean-forward="false" selection-start-line="17" selection-start-column="20" selection-end-line="17" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#25#0" expanded="true" />
+            <element signature="e#5223#5304#0" expanded="false" />
+            <element signature="e#5789#7614#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/minesweeper/board.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4608">
+          <caret line="339" column="8" lean-forward="false" selection-start-line="339" selection-start-column="8" selection-end-line="339" selection-end-column="8" />
           <folding>
             <element signature="e#0#29#0" expanded="true" />
+            <element signature="e#4823#5613#0" expanded="false" />
+            <element signature="e#5673#6693#0" expanded="false" />
+            <element signature="e#10024#10646#0" expanded="false" />
+            <marker date="1492707740193" expanded="false" signature="3794:4741" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/minesweeper/test/board_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+            <element signature="e#323#653#0" expanded="false" />
+            <element signature="e#692#1275#0" expanded="false" />
+            <element signature="e#777#922#0" expanded="false" />
+            <element signature="e#1071#1148#0" expanded="false" />
+            <element signature="e#1198#1275#0" expanded="false" />
+            <element signature="e#1315#1705#0" expanded="false" />
+            <element signature="e#1398#1465#0" expanded="false" />
+            <element signature="e#2083#2172#0" expanded="false" />
+            <element signature="e#2212#2746#0" expanded="false" />
+            <element signature="e#2247#2407#0" expanded="false" />
+            <element signature="e#2456#2567#0" expanded="false" />
+            <element signature="e#2618#2746#0" expanded="false" />
+            <element signature="e#3504#3694#1" expanded="false" />
+            <element signature="e#3786#3816#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/minesweeper/message.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="246">
+          <caret line="14" column="32" lean-forward="false" selection-start-line="14" selection-start-column="32" selection-end-line="14" selection-end-column="32" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/minesweeper/server.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="666">
-          <caret line="265" column="0" lean-forward="true" selection-start-line="265" selection-start-column="0" selection-end-line="265" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#25#0" expanded="true" />
-            <element signature="e#5223#5304#0" expanded="false" />
-            <element signature="e#5789#7614#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>

@@ -9,7 +9,6 @@ class Message(object):
         return self.get_representation()
 
 
-# noinspection PyAbstractClass
 class UTSMessage(Message):
     """
     A UTSMessage (User-To-Server message) is a superclass for all those classes representing

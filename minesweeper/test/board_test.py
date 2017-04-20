@@ -1,4 +1,7 @@
 import unittest
+from concurrent.futures import ALL_COMPLETED
+from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import wait
 from unittest import TestCase, SkipTest
 from random import randint
 from minesweeper.board import *
@@ -87,29 +90,57 @@ class BoardTest(TestCase):
                 root + file
             )
 
+    def test_thread_safety(self):
+        configs = {
+            "threads": 35,
+            "cycles": 50,
+        }
+        board = Board.create_from_difficulty(Board.DIFF_HARD)
+        executor = ThreadPoolExecutor(configs["threads"])
+        futures = list()
+
+        for i in range(configs["threads"]):
+            futures.append(
+                executor.submit(
+                    board.toggle_dug,
+                    configs["cycles"]
+                )
+            )
+
+        wait(futures, None, ALL_COMPLETED)
+
+        state = board.square(0, 0).state
+
+        for s in board:
+            self.assertEqual(
+                state,
+                s.state
+            )
+
 
 class UncheckedBoardTest:
 
     @staticmethod
-    def test_free():
+    def print_board():
         """
         Utily method to see some console output when debugging the code, as the unittest framework captures it and
         it didn't seem straightforward to me displaying it.
         """
-        b = Board.create_from_difficulty()
+        b = Board.create_from_difficulty(Board.DIFF_HARD)
+        b.toggle_dug(3)
 
-        b.set_state(0, 1, State.DUG)
-        b.set_state(3, 1, State.DUG)
-        b.set_state(0, 2, State.DUG)
-        b.set_state(0, 1, State.DUG)
-        b.set_state(0, 5, State.DUG)
-        b.set_state(6, 0, State.DUG)
-        b.set_state(0, 8, State.DUG)
-        b.set_state(1, 1, State.DUG)
-        b.set_state(7, 2, State.DUG)
-        b.set_state(4, 1, State.DUG)
-        b.set_state(4, 3, State.FLAGGED)
-        b.set_state(4, 5, State.FLAGGED)
+        # b.set_state(0, 1, State.DUG)
+        # b.set_state(3, 1, State.DUG)
+        # b.set_state(0, 2, State.DUG)
+        # b.set_state(0, 1, State.DUG)
+        # b.set_state(0, 5, State.DUG)
+        # b.set_state(6, 0, State.DUG)
+        # b.set_state(0, 8, State.DUG)
+        # b.set_state(1, 1, State.DUG)
+        # b.set_state(7, 2, State.DUG)
+        # b.set_state(4, 1, State.DUG)
+        # b.set_state(4, 3, State.FLAGGED)
+        # b.set_state(4, 5, State.FLAGGED)
 
         print(b)
 
@@ -126,4 +157,4 @@ class UncheckedBoardTest:
 
 if __name__ == "__main__":
     unittest.main(BoardTest)
-    # BoardFreeTest.test_create_probability(15)
+    # UncheckedBoardTest().print_board()
