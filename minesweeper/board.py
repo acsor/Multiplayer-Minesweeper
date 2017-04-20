@@ -60,7 +60,7 @@ class Board:
     reentrant locks) and that the application of this to the body (or part of it) of an observer or mutator method is
     enough to ensure thread safety.
 
-    In a less theoretical way, thread safety of this class may be ensured by a test included in board_test.py. But I'll
+    In a less theoretical way, thread safety of this class is ensured by a test included in board_test.py. But I'll
     limit myself to only indicating that there is such a test, and won't explain how it works or how it guarantees
     thread safety on this class.
     """
