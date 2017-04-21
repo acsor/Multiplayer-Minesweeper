@@ -43,8 +43,8 @@ class Board:
     protection), can be legitimately accessed and modified by observer and mutator methods. These all use
     synchronization, and as long as a client of Board does not attempt a direct access at self._squares or at an
     instance of Square, race conditions should not occur. (Of course a rewriting of the Square class may be operated,
-    for ensuring better security. This, however, is not being done for lack of time.) Particularly, I do not see any
-    technique which makes use of thread confinement, immutability or threadsafe datatypes for ensuring thread
+    for ensuring better security. This, however, is not being done for lack of time.) I do not see any piece of
+    code using techniques such as thread confinement, immutability or threadsafe datatypes for ensuring thread
     security on this class. (Thread safety techniques discussed in the lecture notes of this course are, indeed,
     confinement, immutability, thread safe datatypes and synchronization.)
 
