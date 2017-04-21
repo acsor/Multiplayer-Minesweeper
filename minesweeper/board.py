@@ -35,34 +35,21 @@ class Square:
 
 class Board:
     """ Problem 3, point b. Thread safety argument:\n
-    This thread safety argument is only a draft, and could potentially contain errors,
-    imperfections or lack some considerations.
     Thread safety is currently ensured in Board only. The Square class and any other lack
-    any type of coverage.
+    any type of coverage. Accessing some of the Board's squares through the Square class can lead to race conditions.
 
-    Every method where the representation of Board is:
-        1. Read;
-        2. Changed
-    is wrapped, through some Python construct, by a thread safety primitive.\n
-    This means that, as long as we rely on our understanding of thread safety
-    principles, a method which 1. wishes to read a relevant part of the representation of Board must wait any other
-    method which is invoked in another thread and which comprises some observer (or mutator) code, and hence is
-    wrapped by a thread safety primitive. (As stated before, it is assumed that every observer or mutator method is
-    wrapped by one of these primitives, and so we take this fact for granted, however true or false it may be.
-    There's only one creator method (__init__) and that doesn't need protection; there are also some producer methods,
-    but they are static and they too don't need any control.) And a mutator method which 2. wants to access some data
-    must wait that any observer method finishes reading the data at the state it started, and that any mutator method
-    modifies its data in a manner which is consistent with how it started.
+    Board is made thread-safe exclusively by synchronization, by using a reentrant lock (a RLock). The self._squares
+    attribute, which can nevertheless be accessed even though it is marked private (Python does not provide access
+    protection), can be legitimately accessed and modified by observer and mutator methods. These all use
+    synchronization, and as long as a client of Board does not attempt a direct access at self._squares or at an
+    instance of Square, race conditions should not occur. (Of course a rewriting of the Square class may be operated,
+    for ensuring better security. This, however, is not being done for lack of time.) Particularly, I do not see any
+    technique which makes use of thread confinement, immutability or threadsafe datatypes for ensuring thread
+    security on this class. (Thread safety techniques discussed in the lecture notes of this course are, indeed,
+    confinement, immutability, thread safe datatypes and synchronization.)
 
-    Clearly the paragraph above re-explains some general thread-safety techniques. If we wished to give those for
-    granted we could also omit it, and consider only what locking primitives are used where. In that case, it would be
-    easy to illustrate that the techniques employed are merely one locking technique (more specifically, locking with
-    reentrant locks) and that the application of this to the body (or part of it) of an observer or mutator method is
-    enough to ensure thread safety.
-
-    In a less theoretical way, thread safety of this class is ensured by a test included in board_test.py. But I'll
-    limit myself to only indicating that there is such a test, and won't explain how it works or how it guarantees
-    thread safety on this class.
+    Besides arguments for the thread-safety of Board, a test to confirm that no race conditions occur inside Board is
+    included in board_test.py.
     """
     # Height, width, mines_count number
     DIFF_EASY = (9, 9, 10)
@@ -70,21 +57,21 @@ class Board:
     DIFF_HARD = (16, 30, 99)
 
     def __init__(self, boolean_grid):
-        self.squares = list()
-        self.lock: RLock = RLock()
+        self._squares = list()
+        self._lock: RLock = RLock()
 
-        self.lock.acquire()
+        self._lock.acquire()
 
         for row in range(len(boolean_grid)):
-            self.squares.append(list())
+            self._squares.append(list())
 
             for col in range(len(boolean_grid[row])):
-                self.squares[row].append(
+                self._squares[row].append(
                     Square(row, col, boolean_grid[row][col], State.UNTOUCHED)
                 )
 
         self._check_state()
-        self.lock.release()
+        self._lock.release()
 
     @staticmethod
     def create_from_probability(height, width, bomb_probability=0.25):
@@ -161,7 +148,7 @@ class Board:
         return Board(lines)
 
     def __repr__(self):
-        with self.lock:
+        with self._lock:
             return "<'%s.%s' object, height=%d, width=%d, mines_count=%d>" % \
                    (self.__class__.__module__, self.__class__.__name__, self.height(), self.width(), self.mines_count())
 
@@ -187,49 +174,49 @@ class Board:
             return result
 
         result = ""
-        self.lock.acquire()
+        self._lock.acquire()
 
-        for row in self.squares:
+        for row in self._squares:
             result += format_row(row) + "\n"
 
-        self.lock.release()
+        self._lock.release()
 
         return result
 
     def __len__(self):
-        with self.lock:
-            return sum([len(row) for row in self.squares])
+        with self._lock:
+            return sum([len(row) for row in self._squares])
 
     def __contains__(self, key):
         if not (isinstance(key[0], int) and isinstance(key[1], int)):
             raise ValueError("Arguments must be integers (found %s, %s)" % (key[0], key[1]))
 
-        with self.lock:
-            return 0 <= key[0] < len(self.squares) and \
-                   0 <= key[1] < len(self.squares[key[0]])
+        with self._lock:
+            return 0 <= key[0] < len(self._squares) and \
+                   0 <= key[1] < len(self._squares[key[0]])
 
     def __iter__(self):
-        with self.lock:
-            return iter(chain(*self.squares))
+        with self._lock:
+            return iter(chain(*self._squares))
 
     def square(self, row, col):
-        with self.lock:
-            return self.squares[row][col]
+        with self._lock:
+            return self._squares[row][col]
 
     def height(self):
-        with self.lock:
-            return len(self.squares)
+        with self._lock:
+            return len(self._squares)
 
     def width(self):
-        with self.lock:
-            return len(self.squares[0]) if len(self.squares) > 0 else 0
+        with self._lock:
+            return len(self._squares[0]) if len(self._squares) > 0 else 0
 
     def mines_count(self):
         """
         :return: an int indicating the number of squares where has_bomb evaluates to true, i.e. those squares
             which have a bomb, or are "mined".
         """
-        with self.lock:
+        with self._lock:
             return len([square for square in self if square.has_bomb])
 
     def set_state(self, row, col, state):
@@ -242,14 +229,14 @@ class Board:
         :param col: col coordinate
         :param state: State value to set the (row, col) square into
         """
-        self.lock.acquire()
+        self._lock.acquire()
 
         if (row, col) not in self:
             raise ValueError("%d, %d coordinates are out of range" % (row, col))
 
-        self.squares[row][col].state = state
+        self._squares[row][col].state = state
 
-        if state == State.DUG and not self.squares[row][col].has_bomb:
+        if state == State.DUG and not self._squares[row][col].has_bomb:
             neighbors = self.neighbors(row, col)
             nearby_bombs = len([n for n in neighbors if n.has_bomb])
 
@@ -257,25 +244,25 @@ class Board:
                 for n in [s for s in neighbors if s.state != State.DUG]:
                     self.set_state(n.row, n.col, State.DUG)
 
-        self.lock.release()
+        self._lock.release()
 
     def neighbors(self, row, col):
         """
         :return: a list containing all those squares which are one square away from the (row, col) square, that is its
             "neighbours".
         """
-        self.lock.acquire()
+        self._lock.acquire()
 
         result = list()
-        min_row, max_row = max(row - 1, 0), min(row + 1, len(self.squares) - 1)
-        min_col, max_col = max(col - 1, 0), min(col + 1, len(self.squares[row]) - 1)
+        min_row, max_row = max(row - 1, 0), min(row + 1, len(self._squares) - 1)
+        min_col, max_col = max(col - 1, 0), min(col + 1, len(self._squares[row]) - 1)
 
         for x in range(min_row, max_row + 1):
             for y in range(min_col, max_col + 1):
                 if (x, y) != (row, col):
-                    result.append(self.squares[x][y])
+                    result.append(self._squares[x][y])
 
-        self.lock.release()
+        self._lock.release()
 
         return result
 
@@ -284,10 +271,10 @@ class Board:
         Performs validity checks on the current instance, raising relevant exceptions when detecting an invalid state.
         :return: True if no inconsistencies were found within the current instance.
         """
-        self.lock.acquire()
-        expected_line_length = len(self.squares[0]) if len(self.squares) > 0 else None
+        self._lock.acquire()
+        expected_line_length = len(self._squares[0]) if len(self._squares) > 0 else None
 
-        for line in self.squares:
+        for line in self._squares:
             types = {type(square) for square in line}
 
             if {Square} != types:
@@ -295,7 +282,7 @@ class Board:
             if len(line) != expected_line_length:
                 raise ValueError("Found a %d-element-wide line, expected %d" % (len(line), expected_line_length))
 
-        self.lock.release()
+        self._lock.release()
 
         return True
 
@@ -326,7 +313,7 @@ class Board:
         for more info). If the state of a square is FLAGGED no modification occurs.\n
         This method is primarily used for debug purposes.
         """
-        self.lock.acquire()
+        self._lock.acquire()
 
         for i in range(toggles):
             for s in self:
@@ -337,4 +324,4 @@ class Board:
                     # self.set_state(s.row, s.col, State.UNTOUCHED)
                     s.state = State.UNTOUCHED
 
-        self.lock.release()
+        self._lock.release()

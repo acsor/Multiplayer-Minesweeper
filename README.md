@@ -9,5 +9,7 @@ version is only downloadable offline (through a [link on the 2016 course](https:
 
 Some notes on the execution:
 * Python was chosen over Java, although Java was requested on the problem assignment. The reasons for this choice are inherently personal to the implementer of this project.
+ (Briefly: I had used Java for all of the previous assignments, and I didn't program in another language from some time. So I decided to pick Python, even
+ though learning the many things about the language and its library required me some additional days.)
 * Currently, the user connection is closed regardless of the DEBUG flag. (See Problem 5, point a. or point 3. of the DIG message specification for more infos.)
 * Point b. in Problem 5 is still incomplete (i.e. the multiple client connections are not threadsafe - but the Board is).

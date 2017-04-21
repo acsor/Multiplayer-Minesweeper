@@ -21,30 +21,30 @@ class MineSweeperServer:
     }
 
     def __init__(self, board, port=DEFAULT_CONFIGS["port"], debug=False):
-        self.board = board
-        self.futures_to_connections = dict()
+        self._board = board
+        self._futures_to_connections = dict()
         self.max_clients = self.DEFAULT_CONFIGS["max_clients"]
 
-        self.server = socket(AF_INET, SOCK_STREAM)
-        self.server.bind((self.DEFAULT_CONFIGS["host"], port))
-        self.server.listen(self.max_clients)
+        self._server = socket(AF_INET, SOCK_STREAM)
+        self._server.bind((self.DEFAULT_CONFIGS["host"], port))
+        self._server.listen(self.max_clients)
 
-        self.executor = ThreadPoolExecutor(self.max_clients + 1)
+        self._executor = ThreadPoolExecutor(self.max_clients + 1)
 
         self.is_closed = False
 
-        self.logger = getLogger(__name__)
-        self.logger.setLevel(DEBUG)
-        self.logger.addHandler(StreamHandler(stdout) if debug else NullHandler())
+        self._logger = getLogger(__name__)
+        self._logger.setLevel(DEBUG)
+        self._logger.addHandler(StreamHandler(stdout) if debug else NullHandler())
 
-        self.logger.debug("Listening at port %d...", port)
+        self._logger.debug("Listening at port %d...", port)
 
     def __repr__(self):
         repr_unknown = "unknown"
 
         if not self.is_closed:
-            host = self.server.getsockname()[0] or repr_unknown
-            port = self.server.getsockname()[1] or repr_unknown
+            host = self._server.getsockname()[0] or repr_unknown
+            port = self._server.getsockname()[1] or repr_unknown
         else:
             host = port = repr_unknown
 
@@ -57,56 +57,59 @@ class MineSweeperServer:
 
     def close(self):
         if not self.is_closed:
-            self.executor.shutdown(False)
+            self._executor.shutdown(False)
 
-            self.server.shutdown(SHUT_RDWR)
-            self.server.close()
-            del self.server
+            self._server.shutdown(SHUT_RDWR)
+            self._server.close()
+            del self._server
 
             self.is_closed = True
 
-            self.logger.debug("%s was closed" % repr(self))
+            self._logger.debug("%s was closed" % repr(self))
+
+    def futures(self):
+        return self._futures_to_connections.keys()
 
     def connections(self):
-        return self.futures_to_connections.values()
+        return self._futures_to_connections.values()
 
     def next_connection(self):
         if self.is_full():
-            self.logger.debug(
+            self._logger.debug(
                 "Reached maximum number of connections: %d/%d occupied",
-                len(self.futures_to_connections), self.max_clients
+                len(self._futures_to_connections), self.max_clients
             )
             return None
         else:
             connection = Connection(
                 self,
-                self.server.accept()[0],
+                self._server.accept()[0],
                 self.is_debug_enabled()
             )
-            future = self.executor.submit(connection)
+            future = self._executor.submit(connection)
             future.add_done_callback(self._make_callback_shutdown_client())
 
-            self.futures_to_connections[future] = connection
+            self._futures_to_connections[future] = connection
 
             return future
 
     def is_full(self):
-        return len(self.futures_to_connections) >= self.max_clients
+        return len(self._futures_to_connections) >= self.max_clients
 
     def is_debug_enabled(self):
-        return NullHandler not in (type(h) for h in self.logger.handlers)
+        return NullHandler not in (type(h) for h in self._logger.handlers)
 
     def _make_callback_shutdown_client(self):
 
         def _callback_shutdown_client(future):
-            connection = self.futures_to_connections[future]
+            connection = self._futures_to_connections[future]
 
             connection.close()
-            self.futures_to_connections.pop(future)
+            self._futures_to_connections.pop(future)
 
-            self.logger.debug(
+            self._logger.debug(
                 "Connection closed: %d/%d still running",
-                len(self.futures_to_connections),
+                len(self._futures_to_connections),
                 self.max_clients
             )
 
@@ -117,7 +120,7 @@ class Connection:
 
     def __init__(self, ms_server: MineSweeperServer, client: socket, debug=False):
         self.server = ms_server
-        self.board = self.server.board
+        self.board = self.server._board
         self.client: socket = client
 
         self.is_closed = False
@@ -277,7 +280,7 @@ def main():
                     len(server.connections()),
                     server.max_clients
                 )
-                concurrent.futures.wait(server.futures_to_connections.keys(), None, concurrent.futures.FIRST_COMPLETED)
+                concurrent.futures.wait(server.futures(), None, concurrent.futures.FIRST_COMPLETED)
                 sleep(configs["sleep"])
             else:
                 server.next_connection()
