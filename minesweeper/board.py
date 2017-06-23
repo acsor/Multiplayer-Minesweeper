@@ -2,6 +2,8 @@ from enum import Enum, unique
 from random import shuffle, random
 from itertools import chain
 from threading import RLock
+from math import floor, log
+from minesweeper.utils import digits
 
 
 @unique
@@ -173,11 +175,39 @@ class Board:
 
             return result
 
-        result = ""
+        def format_row_header():
+            """
+            :return: A header line to be displayed on top of the board grid.
+            """
+            sep = " "
+            hmaxdigits = digits(self.width())               # The maximum number of digits that a column index can take
+            vpad = sep * (digits(self.height() - 1) + 1)    # The vertical padding whitespace to add before this header
+            # The column indices, in string form, padded with the required whitespace
+            indices = [(str(i).ljust(hmaxdigits))[::-1] for i in range(self.width())]
+            result = ""
+
+            for i in range(hmaxdigits):
+                # result is added a new header line at each iteration
+                result += vpad + sep.join([index[i] for index in indices])
+
+                if i < hmaxdigits - 1:
+                    result += "\n"
+
+            return result
+
+        def vertical_padding(rowindex):
+            """
+            :param rowindex: index of the board row being displayed
+            :return: the padding to be appended in front of a board row to allow proper alignment
+            """
+            return " " * (digits(self.height() - 1) + 1 - digits(rowindex))
+
+        result = format_row_header() + "\n"
+
         self._lock.acquire()
 
-        for row in self._squares:
-            result += format_row(row) + "\n"
+        for rowindex, row in zip(range(self.height()), self._squares):
+            result += str(rowindex) + vertical_padding(rowindex) + format_row(row) + "\n"
 
         self._lock.release()
 
