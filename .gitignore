@@ -1,4 +1,6 @@
 # Custom rules
+.idea/workspace.xml
+.idea/tools.xml
 /__pycache__
 /minesweeper/__pycache__
 /minesweeper/test/__pycache__
